@@ -1,0 +1,8 @@
+# Created by https://www.gitignore.io/api/hexo
+
+### Hexo ###
+db.json
+public/
+
+
+# End of https://www.gitignore.io/api/hexo

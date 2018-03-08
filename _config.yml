@@ -7,7 +7,7 @@ title: Yun's Blog
 subtitle: 
 description:
 author: Yun
-language: zh_CN
+language: zh-Hans
 timezone: Asia/Shanghai
 
 # URL
@@ -54,7 +54,9 @@ index_generator:
   
 # Category & Tag
 default_category: uncategorized
-category_map:
+category_map: 
+  iOS: ios
+  其他: other
 tag_map:
 
 # Date / Time format
@@ -72,7 +74,7 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
