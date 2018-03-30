@@ -229,7 +229,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/08/hello-world/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/29/Marddown-syntax/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Yun">
@@ -248,7 +248,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/03/08/hello-world/" itemprop="url">Hello World</a></h1>
+                <a class="post-title-link" href="/2018/03/29/Marddown-syntax/" itemprop="url">Marddown 基本语法</a></h1>
         
 
         <div class="post-meta">
@@ -260,8 +260,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-08T15:44:58+08:00">
-                2018-03-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-29T10:11:08+08:00">
+                2018-03-29
               </time>
             
 
@@ -270,6 +270,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MarkDown/" itemprop="url" rel="index">
+                    <span itemprop="name">MarkDown</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -300,15 +322,68 @@
       
         
           
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+            <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>该说明为 Markdown 的基本语法。使用的编辑器为 Mark Text，所以会备注一些 Mark Text的功能及其快捷键。</p>
+<hr>
+<h1 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h1><p>标题分为6级，1-6级用连续的#（1-6个）表示。（快捷键为：Cmd+1-6），如</p>
+<blockquote>
+<h1 id="标题一"><a href="#标题一" class="headerlink" title="标题一"></a>标题一</h1></blockquote>
+<blockquote>
+<h2 id="标题二"><a href="#标题二" class="headerlink" title="标题二"></a>标题二</h2></blockquote>
+<h1 id="段落"><a href="#段落" class="headerlink" title="段落"></a>段落</h1><p>段落由空行表示（快捷键为：↓）</p>
+<h1 id="区块"><a href="#区块" class="headerlink" title="区块"></a>区块</h1><p>区块用&gt; 表示（快捷键为：Opt+Cmd+Q），&gt;&gt; 表示二级区块</p>
+<blockquote>
+<p>这是一个区块</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>二级区块 </p>
+</blockquote>
+</blockquote>
+<h1 id="修辞和强调"><a href="#修辞和强调" class="headerlink" title="修辞和强调"></a>修辞和强调</h1><p>修辞和强调用成对的* 或_ 表示</p>
+<ul>
+<li><p><em>斜体</em> （成对的 *或 _） （快捷键为：Cmd+E）</p>
+</li>
+<li><p><strong>粗体</strong> （成对的**或__） （快捷键为：Shift+Cmd+B）</p>
+</li>
+<li><p><del>删除线</del> （成对的~~）（快捷键为：Cmd+D）</p>
+</li>
+</ul>
+<h1 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h1><h2 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h2><p>使用* 或 + 或 - 加空格 表示无序列表 （快捷键为：Opt+Cmd+U）</p>
+<ul>
+<li>Mark text （默认用：-） </li>
+</ul>
+<h2 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h2><p>由 数字+英文.+空格 表示有序列表（快捷键为：Opt+Cmd+O）</p>
+<ol>
+<li>序号1</li>
+</ol>
+<h2 id="任务列表"><a href="#任务列表" class="headerlink" title="任务列表"></a>任务列表</h2><p>由- [ ] 或- [x] 表示 （快捷键为：Opt+Cmd+X）</p>
+<ul>
+<li><p>[ ] 任务1（未完成）</p>
+</li>
+<li><p>[x] 任务2（已完成）</p>
+</li>
+</ul>
+<h1 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h1><p>两种链接：行内、参考。都是用[]表示</p>
+<ul>
+<li><p>行内：[ 标题 ]+( 链接 ) – <a href="https://www.baidu.com/" target="_blank" rel="noopener">百度</a></p>
+</li>
+<li><p>参考：[标题]+[参考值] – [百度][1]</p>
+</li>
+</ul>
+<h1 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h1><p>图片类似链接：在前面加入!， !+[ 标题 ]+( 链接 )</p>
+<p><img src="http://cdn.bdzg.me/FsPod2eu9FtiyvxZOoyUorp8K_4k" alt="图片"></p>
+<h1 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h1><ul>
+<li>用一对反引号<code></code>引用一行代码。</li>
+</ul>
+<p><code>-(void)didItemOn{
+    return;
+}</code></p>
+<ul>
+<li>用一对3个反引号（`）引用多行代码。在第一组反引号后可以加入语言标记。如objectivec</li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-(<span class="keyword">void</span>)didItemOn&#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="分割线"><a href="#分割线" class="headerlink" title="分割线"></a>分割线</h1><p>用—（3个-） 表示分割线，注意：—后面有一个空格。</p>
+<hr>
 
           
         
@@ -397,7 +472,25 @@
             
 
             
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
 
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
             
 
           </nav>

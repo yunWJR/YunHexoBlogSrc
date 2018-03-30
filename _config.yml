@@ -5,7 +5,7 @@
 # Site
 title: Yun's Blog
 subtitle: 
-description:
+description: 
 author: Yun
 language: zh-Hans
 timezone: Asia/Shanghai
@@ -15,7 +15,7 @@ timezone: Asia/Shanghai
 url: http://yoursite.com
 root: /
 permalink: :year/:month/:day/:title/
-permalink_defaults:
+permalink_defaults: 
 
 # Directory
 source_dir: source
@@ -57,7 +57,11 @@ default_category: uncategorized
 category_map: 
   iOS: ios
   其他: other
+  MarkDown: MarkDown
 tag_map:
+  iOS: ios
+  MarkDown: MarkDown
+
 
 # Date / Time format
 ## Hexo uses Moment.js to parse and display date
