@@ -55,11 +55,11 @@ index_generator:
 # Category & Tag
 default_category: uncategorized
 category_map: 
-  iOS: ios
+  iOS: iOS
   其他: other
   MarkDown: MarkDown
 tag_map:
-  iOS: ios
+  iOS: iOS
   MarkDown: MarkDown
 
 
