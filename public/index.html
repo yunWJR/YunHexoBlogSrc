@@ -249,6 +249,188 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/20/iOS-Sol-circular-reference/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yun">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yun's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/04/20/iOS-Sol-circular-reference/" itemprop="url">iOS中的循环引用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-20T09:17:29+08:00">
+                2018-04-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="iOS中的循环引用"><a href="#iOS中的循环引用" class="headerlink" title="iOS中的循环引用"></a>iOS中的循环引用</h1><h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h2><p>iOS内存中的分区有：堆、栈、静态区。其中，栈和静态区是操作系统自己管理回收，不会造成循环引用。在堆中的相互引用无法回收，有可能造成循环引用。</p>
+<blockquote>
+<p>循环引用的实质：多个对象相互之间有强引用，不能施放让系统回收。</p>
+</blockquote>
+<blockquote>
+<p>解决循环引用一般是将 strong 引用改为 weak 引用。</p>
+</blockquote>
+<h2 id="2-循环引用场景分析及解决方法"><a href="#2-循环引用场景分析及解决方法" class="headerlink" title="2. 循环引用场景分析及解决方法"></a>2. 循环引用场景分析及解决方法</h2><h3 id="1）父类与子类"><a href="#1）父类与子类" class="headerlink" title="1）父类与子类"></a>1）父类与子类</h3><blockquote>
+<p>如：在使用UITableView 的时候，将 UITableView 给 Cell 使用，cell 中的 strong 引用会造成循环引用。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// controller</span><br><span class="line">- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath &#123;</span><br><span class="line">    TestTableViewCell *cell =[tableView dequeueReusableCellWithIdentifier:@&quot;UITableViewCellId&quot; forIndexPath:indexPath];</span><br><span class="line">    cell.tableView = tableView;</span><br><span class="line">    return cell;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// cell</span><br><span class="line">@interface TestTableViewCell : UITableViewCell</span><br><span class="line">@property (nonatomic, strong) UITableView *tableView; // strong 造成循环引用</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>解决：strong 改为 weak</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// cell</span><br><span class="line">@interface TestTableViewCell : UITableViewCell</span><br><span class="line">@property (nonatomic, weak) UITableView *tableView; // strong 改为 weak</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<h3 id="2）block"><a href="#2）block" class="headerlink" title="2）block"></a>2）block</h3><blockquote>
+<p>block在copy时都会对block内部用到的对象进行强引用的。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">self.testObject.testCircleBlock = ^&#123;</span><br><span class="line">   [self doSomething];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>self将block作为自己的属性变量，而在block的方法体里面又引用了 self 本身，此时就很简单的形成了一个循环引用。</p>
+<p>应该将 self 改为弱引用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">__weak typeof(self) weakSelf = self;</span><br><span class="line"> self.testObject.testCircleBlock = ^&#123;</span><br><span class="line">      __strong typeof (weakSelf) strongSelf = weakSelf;</span><br><span class="line">      [strongSelf doSomething];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>在 ARC 中，在被拷贝的 block 中无论是直接引用 self 还是通过引用 self 的成员变量间接引用 self，该 block 都会 retain self。</p>
+</blockquote>
+<ul>
+<li><strong>快速定义宏</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// weak obj</span><br><span class="line">/#define WEAK_OBJ(type)  __weak typeof(type) weak##type = type;</span><br><span class="line"></span><br><span class="line">// strong obj</span><br><span class="line">/#define STRONG_OBJ(type)  __strong typeof(type) str##type = weak##type;</span><br></pre></td></tr></table></figure>
+<h3 id="3）Delegate"><a href="#3）Delegate" class="headerlink" title="3）Delegate"></a>3）Delegate</h3><p>delegate 属性的声明如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@property (nonatomic, weak) id &lt;TestDelegate&gt; delegate;</span><br></pre></td></tr></table></figure></p>
+<p>如果将 weak 改为 strong，则会造成循环引用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// self -&gt; AViewController</span><br><span class="line">BViewController *bVc = [BViewController new];</span><br><span class="line">bVc = self; </span><br><span class="line">[self.navigationController pushViewController: bVc animated:YES];</span><br><span class="line"></span><br><span class="line">   // 假如是 strong 的情况</span><br><span class="line">   // bVc.delegate ===&gt; AViewController (也就是 A 的引用计数 + 1)</span><br><span class="line">   // AViewController 本身又是引用了 &lt;BViewControllerDelegate&gt; ===&gt; delegate 引用计数 + 1</span><br><span class="line">   // 导致： AViewController &lt;======&gt; Delegate ，也就循环引用啦</span><br></pre></td></tr></table></figure>
+<h3 id="4）NSTimer"><a href="#4）NSTimer" class="headerlink" title="4）NSTimer"></a>4）NSTimer</h3><p>NSTimer 的 target 对传入的参数都是强引用（即使是 weak 对象）</p>
+<p><img src="http://ot8psglzx.bkt.clouddn.com/784630-28d5d03d2d902860.png?imageMogr2/thumbnail/!70p" alt=""></p>
+<p>解决办法: 《Effective Objective-C 》中的52条方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@interface NSTimer (YPQBlocksSupport)</span><br><span class="line"></span><br><span class="line">+ (NSTimer *)ypq_scheduledTimeWithTimeInterval:(NSTimeInterval)interval</span><br><span class="line">                                         block:(void(^)())block</span><br><span class="line">                                       repeats:(BOOL)repeats;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#import &quot;NSTimer+YPQBlocksSupport.h&quot;</span><br><span class="line"></span><br><span class="line">@implementation NSTimer (YPQBlocksSupport)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">+ (NSTimer *)ypq_scheduledTimeWithTimeInterval:(NSTimeInterval)interval</span><br><span class="line">                                         block:(void(^)())block</span><br><span class="line">                                       repeats:(BOOL)repeats</span><br><span class="line">&#123;</span><br><span class="line">    return [self scheduledTimerWithTimeInterval:interval</span><br><span class="line">                                         target:self</span><br><span class="line">                                       selector:@selector(ypq_blockInvoke:) userInfo:[block copy]</span><br><span class="line">                                        repeats:repeats];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)ypq_blockInvoke:(NSTimer *)timer</span><br><span class="line">&#123;</span><br><span class="line">    void (^block)() = timer.userInfo;</span><br><span class="line">    if(block)</span><br><span class="line">    &#123;</span><br><span class="line">        block();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>使用方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">__weak ViewController * weakSelf = self;</span><br><span class="line">[NSTimer ypq_scheduledTimeWithTimeInterval:4.0f</span><br><span class="line">                                     block:^&#123;</span><br><span class="line">                                         ViewController * strongSelf = weakSelf;</span><br><span class="line">                                         [strongSelf afterThreeSecondBeginAction];</span><br><span class="line">                                     &#125;</span><br><span class="line">                                   repeats:YES];</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>计时器保留其目标对象，反复执行任务导致的循环，确实要注意，另外在dealloc的时候，不要忘了调用计时器中的 invalidate方法。</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/19/alfred-qiniu-up-img/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1281,7 +1463,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1303,7 +1485,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
