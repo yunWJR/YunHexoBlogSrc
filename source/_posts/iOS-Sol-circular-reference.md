@@ -2,7 +2,7 @@
 title: iOS中的循环引用
 date: 2018-04-20 09:17:29
 categories: iOS
-tags: [iOS,Objective-C,Sol]
+tags: [iOS,Objective-C,总结]
 ---
 
 # iOS中的循环引用
