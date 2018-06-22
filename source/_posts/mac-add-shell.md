@@ -1,5 +1,5 @@
 ---
-title: mac_add_shell
+title: Mac 添加自定义脚本
 date: 2018-05-30 09:19:05
 category: Mac
 tags: [Mac,shell]
