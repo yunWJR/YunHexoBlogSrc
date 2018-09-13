@@ -249,6 +249,199 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/13/hackintosh-summary/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yun">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yun's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/13/hackintosh-summary/" itemprop="url">Hackintosh 黑苹果总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-13T18:22:42+08:00">
+                2018-09-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hackintosh/" itemprop="url" rel="index">
+                    <span itemprop="name">Hackintosh</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Hackintosh-黑苹果总结"><a href="#Hackintosh-黑苹果总结" class="headerlink" title="Hackintosh 黑苹果总结"></a>Hackintosh 黑苹果总结</h1><blockquote>
+<p>个人用黑苹果开发iOS、java已经有2年多。之所以选择黑苹果，还是因为 Macbook 性能太弱，而且发热严重。2年之久，基本随着 Mac系统更新，也会更新系统（不然无法更新最新的Xcode，纯 java 开发倒是无所谓）。只有一次打开【文件保险箱】功能挂了（下面有说明，千万不要打开该选项），其他时候都没问题。分享其中的一些经验，给愿意尝试黑苹果的朋友。</p>
+</blockquote>
+<ul>
+<li><p>个人黑苹果电脑的配置：</p>
+<p>  电脑一：台式机（i7-87000k 华擎 Z370M-ITX 16G GT750ti）</p>
+<p>  电脑二：台式机（i5-4590 华硕 b85m 8G）</p>
+<p>  电脑三：联想 Y700笔记本（i5-6300 8G GT960M）</p>
+</li>
+<li><p>帮人配的电脑：</p>
+<p>  电脑一：台式机（i7-77000 华擎 deskmini 16G）</p>
+<p>  电脑二：台式机（i5-7500 华硕 B150 8G）</p>
+<p>  <a href="https://github.com/yunWJR/Hackintosh_List" target="_blank" rel="noopener">EIF 分享-包括以上提到的几种配置机型</a></p>
+</li>
+</ul>
+<h2 id="一、哪些电脑可以安装黑苹果"><a href="#一、哪些电脑可以安装黑苹果" class="headerlink" title="一、哪些电脑可以安装黑苹果"></a>一、哪些电脑可以安装黑苹果</h2><h3 id="1、笔记本"><a href="#1、笔记本" class="headerlink" title="1、笔记本"></a>1、笔记本</h3><p>如何确定笔记本可以安装：</p>
+<p>1）搜索笔记本型号，看有安装成功的案例没。</p>
+<p>2）看CPU，如果 CPU 的型号与苹果已经发布的笔记本相同或类似（类似定义为同代 CPU），那么 CPU 应该没问题。</p>
+<p>3）看显卡：如果笔记本有独显，那么独显基本是不能使用的，只能使用集显。偶尔少数笔记本有独显，主板不能屏蔽独显，导致无法安装。</p>
+<p>4）以上满足的话，可以尝试安装。</p>
+<h3 id="2、台式机"><a href="#2、台式机" class="headerlink" title="2、台式机"></a>2、台式机</h3><p>如何确定台式机可以安装：</p>
+<p>1）搜索台式机配置，看有安装成功的案例没。</p>
+<p>2）看CPU，如果CPU的型号与苹果已经发布的笔记本相同或类似（类似定义为同代 CPU），那么 CPU 应该没问题，基本都常见的 intel 台式机 CPU 都可以安装。最新的 AMD 都 CPU 也有大神放出内核，可以安装。</p>
+<p>3）看显卡：如果有独显，比较新的 AMD 显卡都可以支持，N 卡一般也支持，有 WebDriver。</p>
+<p>4）主板：一般都支持，技嘉的一般支持原生电源管理，比较好。华擎的支持比较到位，曾经几块主板专门出过安装黑苹果的 BIOS，良心。</p>
+<p>5）网卡：一般 intel 的有线网卡都支持，无线的话，选择 苹果采用的型号，容易驱动。</p>
+<h3 id="3、建议"><a href="#3、建议" class="headerlink" title="3、建议"></a>3、建议</h3><p>1）如果买新电脑</p>
+<p>笔记本可以买没有独显的，因为也用不上。先查下哪些比较好安装的机型，照着买就行。</p>
+<p>台式机可以参考 <a href="https://www.tonymacx86.com/buyersguide/building-a-customac-hackintosh-the-ultimate-buyers-guide/" target="_blank" rel="noopener">tonymacx86</a>上都配置，都很容易安装。</p>
+<p>2）最好配2块以上硬盘。</p>
+<p>一块安装 Mac。另外一块安装 Windows，或者作为备份盘（TimeMachine）。如果作为生成环境使用，建议单独配置一块硬盘作为 TimeMachine 的备份盘。</p>
+<p>3）如果要独显，最好选 AMD 的卡，可以很好的原生驱动。</p>
+<p>4）如果配无线，最好选 Mac 电脑上用过的型号，容易驱动。</p>
+<h2 id="二、安装流程"><a href="#二、安装流程" class="headerlink" title="二、安装流程"></a>二、安装流程</h2><h3 id="最简方式："><a href="#最简方式：" class="headerlink" title="最简方式："></a>最简方式：</h3><p>1、Mac 上 AppStore 中下载 Mac 系统</p>
+<p>2、制作安装镜像到 U 盘，可以借助工具 <a href="http://diskmakerx.com/" target="_blank" rel="noopener">DiskMaker</a></p>
+<p>3、制作 EFI 启动分区，可以制作在 U 盘上，也可以制作在硬盘上。</p>
+<p>4、放入 EFI 分区启动文件（kext 和 config 配置文件等）</p>
+<p>5、设置好 BIOS 选项</p>
+<p>6、从 EFI 启动安装</p>
+<p>7、完善安装（各硬件驱动）</p>
+<p>8、完善 EFI，可将稳定的 EIF 文件，放入 Mac 分区的 EFI 分区。从 Mac 分区启动。</p>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><p>1、不要随意升级 Mac 新版本，可能造成 kext 不兼容。</p>
+<p>2、最好配一块备份盘，用 TimeMachine 备份。TimeMachine 确实好用。</p>
+<p>3、一般不要去动 SLE 下的系统kext，也尽量不要把 kext 放入 SLE 下面，补丁 kext 都可以放在 EFI 下的 kext 中调试。</p>
+<p>4、千万不要打开『安全与隐私』中的 【<strong>文件保险箱</strong>】功能，该功能与硬件相关，打开后，黑苹果就GG。</p>
+<p>5、config 中的硬件 ID 尽量用同一个（同一台机子），新机子第一次安装时，随机生成一个。频繁更改 ID，会让你重新登录 AppleId。</p>
+<h3 id="可以参考的网站"><a href="#可以参考的网站" class="headerlink" title="可以参考的网站"></a>可以参考的网站</h3><p><a href="https://www.tonymacx86.com/" target="_blank" rel="noopener">tonymacx86 - 国外很活跃度黑苹果网站，还有配置推荐</a></p>
+<p><a href="http://bbs.pcbeta.com/forum.php?mod=forumdisplay&amp;fid=558&amp;filter=author&amp;orderby=dateline" target="_blank" rel="noopener">pcbeta - 国内活跃度黑苹果网站</a></p>
+<p><a href="https://sourceforge.net/projects/cloverefiboot/" target="_blank" rel="noopener">cloverefiboot - clover项目现在地址</a></p>
+<p><a href="https://bitbucket.org/RehabMan/" target="_blank" rel="noopener">RehabMan bitbucket -  RehabMan的 kext下载</a></p>
+<p><a href="https://github.com/RehabMan" target="_blank" rel="noopener">RehabMan git - RehabMan的 kext下载和一些配置信息</a></p>
+<p><a href="https://github.com/acidanthera" target="_blank" rel="noopener">acidanthera git - 作者写了很多有用的 kext</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/30/mac-add-shell/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1958,7 +2151,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1969,7 +2162,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1980,7 +2173,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

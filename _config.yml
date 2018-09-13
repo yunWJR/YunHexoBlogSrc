@@ -83,6 +83,9 @@ theme: next
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
-  type: git
+- type: git
   repo: https://github.com/yunWJR/yunWJR.github.io.git
+  branch: master
+- type: git
+  repo: https://git.coding.net/jrw7878/Pages.git
   branch: master
