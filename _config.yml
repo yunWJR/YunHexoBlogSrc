@@ -87,5 +87,5 @@ deploy:
   repo: https://github.com/yunWJR/yunWJR.github.io.git
   branch: master
 - type: git
-  repo: https://git.coding.net/jrw7878/Pages.git
+  repo: https://git.coding.net/jrw7878/jrw7878.git
   branch: master
