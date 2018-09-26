@@ -1,8 +1,8 @@
 ---
 title: 快速上传图片到七牛(Alfred+七牛)
 date: 2018-04-19 11:04:31
-category: MarkDown
-tags: [MarkDown]
+category: Tool
+tags: [Tool,Alfred,QiNiu]
 ---
 
 # 快速上传图片到七牛(Alfred+七牛)

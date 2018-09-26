@@ -2,7 +2,7 @@
 title: Hackintosh 黑苹果总结
 date: 2018-09-13 18:22:42
 categories: Hackintosh
-tags: [Hackintosh]
+tags: [Hackintosh,黑苹果]
 ---
 
 # Hackintosh 黑苹果总结
@@ -57,9 +57,9 @@ tags: [Hackintosh]
 
 1）如果买新电脑
 
-笔记本可以买没有独显的，因为也用不上。先查下哪些比较好安装的机型，照着买就行。
+笔记本可以买没有独显的，因为有也一版用不上。先查下哪些比较好安装的机型，照着买就行。
 
-台式机可以参考 [tonymacx86](https://www.tonymacx86.com/buyersguide/building-a-customac-hackintosh-the-ultimate-buyers-guide/)上都配置，都很容易安装。
+台式机可以参考 [tonymacx86](https://www.tonymacx86.com/buyersguide/building-a-customac-hackintosh-the-ultimate-buyers-guide/)上的配置，都很容易安装。
 
 2）最好配2块以上硬盘。
 

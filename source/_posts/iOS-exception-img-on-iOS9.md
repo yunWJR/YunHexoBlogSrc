@@ -34,11 +34,13 @@ ios9.3以下系统不支持非RGB 色域的图片，需要排查所有图片。
 
 #### 3. 获取asset.json文件
 
-> cd 工作目录
+```
+cd 工作目录
 
-> sudo xcrun --sdk iphoneos assetutil --info ./Assets.car > asset.json
+sudo xcrun --sdk iphoneos assetutil --info ./Assets.car > asset.json
 
-> 输入密码，生成asset.json文件
+输入密码，生成asset.json文件
+```
 
 #### 4. 查找非 RBG图片
 

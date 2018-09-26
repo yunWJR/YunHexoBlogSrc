@@ -5,13 +5,15 @@ categories: iOS
 tags: [iOS,Objective-C]
 ---
 
-# 1、启动页
+# iOS11 适配
+
+## 1、启动页
 
 如果启动页采用 Launch Imaged Sourc，则需要添加iPhoneX的启动图，不然整个 App 上下将有部分不能显示区域。
 
 启动图的尺寸为：1125\*2436px 即：375\*812@3x
 
-# 2、safeArea
+## 2、safeArea
 
 iOS11为UIViewController和UIView增加了两个新的属性safeAreaInsets和safeAreaLayoutGuide, 通过这两个属性我们可以获得安全区域的范围, 
 我们要做的是让那些不能被遮挡的内容和控件在安全区域范围内显示,
@@ -19,11 +21,11 @@ iOS11为UIViewController和UIView增加了两个新的属性safeAreaInsets和saf
 - safeAreaInsets 适用于手动计算.
 - safeAreaLayoutGuide 适用于自动布局.
 
-## 手动布局
+### 手动布局
 新增方法，用于在 SafeArea 改变时，重新布局
 - (void)viewSafeAreaInsetsDidChange;
 
-# 3、Masonry
+## 3、Masonry
 
 **由于引入了 safeArea，需要修改topLayoutGuide 和 bottomLayoutGuide。**
 
@@ -126,7 +128,7 @@ iOS11为UIViewController和UIView增加了两个新的属性safeAreaInsets和saf
 
 
 
-# 4、prefersLargeTitles
+## 4、prefersLargeTitles
 
 该属性简单理解为**大标题**，当设置为 YES 时，导航栏高度将变为：96px，正常情况下为：44px；
 
@@ -141,7 +143,7 @@ self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayMod
 
 ![](http://ot8psglzx.bkt.clouddn.com/1281817-20171120105905915-716853123.png?imageMogr2/thumbnail/!70p)
 
-# 5、UITableView
+## 5、UITableView
 
 UITableView莫名奇妙的偏移20pt或者64pt，
 

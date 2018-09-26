@@ -1,11 +1,11 @@
 ---
-title: Objective-C 属性
+title: Objective-C 基础 - 属性
 date: 2018-04-16 09:05:48
 categories: iOS
 tags: [iOS,Objective-C]
 ---
 
-# Objective-C 属性(property)
+# Objective-C 基础 - 属性(property)
 
 ### @property
 

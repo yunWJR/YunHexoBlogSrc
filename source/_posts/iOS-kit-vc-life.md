@@ -119,4 +119,4 @@ tags: [iOS,UIKit]
 
 - **注意事项**
 
-    暂无
+    在 ARC 环境下，不能主动调用 dealloc 方法。
