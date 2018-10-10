@@ -11,6 +11,7 @@ tags: [iOS,UIKit]
 
 ![](http://ot8psglzx.bkt.clouddn.com/VcLife.png?imageMogr2/thumbnail/!70p)
 
+
 ## init
 
 > 默认初始化
@@ -61,7 +62,7 @@ tags: [iOS,UIKit]
     
 ## viewDidApper
 
-> 1、view 已经显示，动画切换完成
+> view 已经显示，动画切换完成
 
 - **业务逻辑**
 
@@ -73,7 +74,7 @@ tags: [iOS,UIKit]
     
 ## viewWillDisapper
 
-> 1、view移出之前，还未调用 removeFromSuperView
+> view移出之前，还未调用 removeFromSuperView
 
 - **业务逻辑**
 
@@ -86,7 +87,7 @@ tags: [iOS,UIKit]
 ## viewDidDisapper
 
 
-> 1、view移出完成，动画完成。
+> view移出完成，动画完成。
 
 - **业务逻辑**
 
@@ -99,7 +100,7 @@ tags: [iOS,UIKit]
 ## viewDidUnload
 
 
-> 1、一般发生在内存警告时，view置为nil
+> 一般发生在内存警告时，view置为nil
 
 - **业务逻辑**
 
@@ -111,7 +112,7 @@ tags: [iOS,UIKit]
     
 ## dealloc
 
-> 1、销毁时调用
+> 销毁时调用
 
 - **业务逻辑**
 
