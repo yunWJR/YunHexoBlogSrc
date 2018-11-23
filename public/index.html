@@ -277,10 +277,623 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/23/iOS-aspect-summary/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yun">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yun's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/23/iOS-aspect-summary/" itemprop="url">
+                  iOS 实现AOP编程(Objective-C)
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-11-23 17:26:56 / Modified: 17:27:06" itemprop="dateCreated datePublished" datetime="2018-11-23T17:26:56+08:00">2018-11-23</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="iOS-实现AOP编程-Objective-C"><a href="#iOS-实现AOP编程-Objective-C" class="headerlink" title="iOS 实现AOP编程(Objective-C)"></a>iOS 实现AOP编程(Objective-C)</h1><h2 id="一、AOP与OOP"><a href="#一、AOP与OOP" class="headerlink" title="一、AOP与OOP"></a>一、AOP与OOP</h2><ul>
+<li><strong>OOP（Object Oriented Programming，面向对象编程）</strong></li>
+</ul>
+<blockquote>
+<p>OOP比较经典的程序设计思想，面向对象的特点是封装、多态和继承。面向对象设计时，每个对象职责不同，封装的功能也不同。这样就进行了解耦，增加了代码的重用性、灵活性和扩展性。</p>
+</blockquote>
+<blockquote>
+<p>但这种方式也存在一个问题，比如，我们在两个类中，可能都需要在每个方法中进行日志记录（功能完全一样）。按OOP 方式，需要两个类的方法中都加入日志功能。这样就会有很多重复代码，当需要更改日志记录功能时，每个实现的类都需要更改。</p>
+</blockquote>
+<blockquote>
+<p>一种解决方法：将日志功能写在一个独立的类中，然后再在这两个类中调用该类的日志记录功能。修改日志功能只需要修改单独的类即可。但是各个类与独立类有耦合，当有一个类需要增加或移除日志记录功能时，需要修改该类。另一种方法就是 AOP。</p>
+</blockquote>
+<ul>
+<li><strong>AOP（Aspect Oriented Program，面向切面编程）</strong></li>
+</ul>
+<blockquote>
+<p>AOP 思想是一种在不修改源代码的情况下给程序动态统一添加功能的一种技术。一般通过预编译方式和运行期动态代理实现程序功能的统一维护。</p>
+</blockquote>
+<blockquote>
+<p>一般而言，我们管切入到指定类指定方法的代码片段称为切面，而切入到哪些类、哪些方法则叫切入点。</p>
+</blockquote>
+<blockquote>
+<p>AOP 与 OOP 配合，可以很好的分离应用的业务逻辑与系统级服务。有了AOP，我们就可以把几个类共有的代码，抽取到一个切片中，等到需要时再切入对象中去，从而改变其原有的行为。</p>
+</blockquote>
+<h2 id="二、-iOS实现-AOP"><a href="#二、-iOS实现-AOP" class="headerlink" title="二、 iOS实现 AOP"></a>二、 iOS实现 AOP</h2><p>实现 AOP 需要语言支持对对象的动态扩展，正好 Objective-C的 Runtime 特性可以实现。现在有两种实现方式：</p>
+<ul>
+<li><strong>1. Method Swizzling</strong></li>
+</ul>
+<ul>
+<li><strong>2. 消息转发</strong></li>
+</ul>
+<h3 id="1-Method-Swizzling-实现-AOP"><a href="#1-Method-Swizzling-实现-AOP" class="headerlink" title="1. Method Swizzling 实现 AOP"></a>1. Method Swizzling 实现 AOP</h3><p>在Objective-C中调用一个方法，其实是向一个对象发送消息，查找消息的唯一依据是selector的名字。</p>
+<p>利用Objective-C的动态特性，可以实现在运行时偷换selector对应的方法实现。 </p>
+<p>每个类都有一个方法列表，存放着selector的名字和方法实现的映射关系。IMP有点类似函数指针，指向具体的Method实现。 </p>
+<ul>
+<li>每个类（Class）维护一张调度表（dispatch table）用于解析运行时发送的消息；</li>
+<li>调度表中的每个实体（entry）都是一个方法（Method），其中key值是一个唯一的名字——选择器（SEL），它对应到一个实现（IMP - 实际上就是指向标准C函数的指针）。</li>
+</ul>
+<p>Method Swizzling就是改变类中SEL 的具体实现函数IMP。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">struct objc_method &#123;</span><br><span class="line">    SEL method_name             OBJC2_UNAVAILABLE; // selector 名字</span><br><span class="line">    char *method_types          OBJC2_UNAVAILABLE;</span><br><span class="line">    IMP method_imp              OBJC2_UNAVAILABLE; // IMP 实现方法，运行时可更改</span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">// 常用函数</span><br><span class="line">- method_exchangeImplementations  // 交换2个方法中的IMP</span><br><span class="line"></span><br><span class="line">- class_replaceMethod // 会调用class_addMethod和method_setImplementation，先实现方法，再设置IMP</span><br><span class="line"></span><br><span class="line">- method_setImplementation // 直接设置某个方法的IMP</span><br></pre></td></tr></table></figure>
+<p>可参考<a href="https://yunwjr.github.io/2018/06/18/iOS-book-EffectiveObjective-C2.0-chap2/" target="_blank" rel="noopener">EffectiveObjective-C2.0 笔记 - 第二部分</a></p>
+<p><strong>示例 - 日志打印</strong></p>
+<ul>
+<li><strong>封装的 Swizzling 方法</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">+ (void)swizzClass:(Class)classItem originSel:(SEL)originSel newSel:(SEL)newSel &#123;</span><br><span class="line">    Method orgMd = class_getInstanceMethod(classItem, originSel);</span><br><span class="line">    Method newMd = class_getInstanceMethod(classItem, newSel);</span><br><span class="line"></span><br><span class="line">    IMP newImp = method_getImplementation(newMd);</span><br><span class="line"></span><br><span class="line">    // 检查源方法有没有实现</span><br><span class="line">    // 如果是YES,表示originSel没有实现，则需要先实现，然后再设置Imp</span><br><span class="line">    // 如果是NO,表示originSel已经有存在的实现方法，此时，只需要将orgMd和newMd互换就好</span><br><span class="line">    BOOL isAddMdSuccess = class_addMethod(classItem, originSel, newImp, method_getTypeEncoding(newMd));</span><br><span class="line"></span><br><span class="line">    if (isAddMdSuccess) &#123;</span><br><span class="line">        // 会调用class_addMethod和method_setImplementation，先实现方法，再设置IMP</span><br><span class="line">        class_replaceMethod(classItem, originSel, newImp, method_getTypeEncoding(newMd));</span><br><span class="line">    &#125;</span><br><span class="line">    else &#123;</span><br><span class="line">        // orgMd和newMd互换</span><br><span class="line">        method_exchangeImplementations(orgMd, newMd);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>注意classItem，看你是替换类的方法，还是实例对象的放</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">+ (Class)getClassItem &#123;</span><br><span class="line">    Class classItem = nil;</span><br><span class="line"></span><br><span class="line">    //要特别注意你替换的方法到底是哪个性质的方法</span><br><span class="line">    // When swizzling a Instance method, use the following:</span><br><span class="line">    // 仅替换本实例方法，子类方法不变</span><br><span class="line">    classItem = [self class];</span><br><span class="line"></span><br><span class="line">    // When swizzling a class method, use the following:</span><br><span class="line">    // 替换类方法</span><br><span class="line">    classItem = object_getClass((id) self);</span><br><span class="line"></span><br><span class="line">    return classItem;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>在 load 中交换</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">// load 中执行 Swizzling</span><br><span class="line">+ (void)load &#123;</span><br><span class="line">    static dispatch_once_t onceToken;</span><br><span class="line"></span><br><span class="line">    // dealloc是关键字，不能使用@selector(dealloc)</span><br><span class="line">    SEL orgSel = NSSelectorFromString(@&quot;dealloc&quot;);</span><br><span class="line"></span><br><span class="line">    SEL newSel = @selector(swizzing_dealloc);</span><br><span class="line"></span><br><span class="line">    // 保证仅执行一次</span><br><span class="line">    dispatch_once(&amp;onceToken, ^&#123;</span><br><span class="line">        [self swizzClass:[self class]</span><br><span class="line">               originSel:orgSel</span><br><span class="line">                  newSel:newSel];</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)swizzing_dealloc &#123;</span><br><span class="line">    NSLog(@&quot; ** %@ 释放了 %s&quot;, NSStringFromClass([self class]), __func__);</span><br><span class="line"></span><br><span class="line">    // 交换后，就不能用 [self dealloc]</span><br><span class="line">    [self swizzing_dealloc];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>为什么在 load 中交换</strong></li>
+</ul>
+<blockquote>
+<p>+(void)load 方法只要类所在文件被引用就会被调用，在程序运行后立即执行（在main()之前执行），这样就可以在执行方法前，完成方法的替换。</p>
+</blockquote>
+<blockquote>
+<p>另外 +(void)initialize 方是在类或者其子类的第一个方法被调用前调用，因为method swizzling会影响全局，+load能够保证在类初始化的时候就会被加载，这为改变系统行为提供了一些统一性。 但+initialize并不能保证在什么时候被调用——事实上也有可能永远也不会被调用，例如应用程序从未直接的给该类发送消息。</p>
+</blockquote>
+<p><strong>使用注意点：</strong></p>
+<ol>
+<li><p>Method Swizzling 需要在 + (void)load{}中使用</p>
+</li>
+<li><p>Method Swizzling 需要保证只执行一次。 需要使用 dispatch_once;</p>
+</li>
+<li><p>注意Class的选择，类对象还是实例对象</p>
+</li>
+<li><p>Method Swizzling 是以替换 IMP 来实现动态修改代码，这样实现的 AOP 不优雅，使用消息转发可以更优雅。</p>
+</li>
+</ol>
+<h3 id="2-消息转发-实现-AOP"><a href="#2-消息转发-实现-AOP" class="headerlink" title="2. 消息转发 实现 AOP"></a>2. 消息转发 实现 AOP</h3><p><a href="https://github.com/steipete/Aspects" target="_blank" rel="noopener">Aspects</a>是一个已经实现的 AOP 轮子。下面结合Aspects对消息转发的实现进行分析。</p>
+<h4 id="2-1-实例方法的执行"><a href="#2-1-实例方法的执行" class="headerlink" title="2.1 实例方法的执行"></a>2.1 实例方法的执行</h4><p>Objective-C 中执行实例方式，其实是给对象发送一个消息（<code>id objc_msgSend ( id self, SEL cmd, ... )</code>），执行流程如下：</p>
+<p><img src="http://qnyunyun.yunsoho.cn/msg_send2.png" alt=""></p>
+<ul>
+<li>对象实例(instance)收到消息（selector 选择子+参数）</li>
+<li>根据对象实例的ISA找到类对象，在类对象中找与选择子名称相符的方法，如果找到，就调至执行代码</li>
+<li>如果找不到，则根据类对象中的super_class指针找到父类的Class对象。一直找到NSObject的类对象</li>
+<li>如果NSObject也无法找到这个选择子，则进入消息转发机制（message forwarding）</li>
+<li>如果消息转发机制无法处理，则抛出异常: <code>doesNotRecognizeSelector:</code></li>
+</ul>
+<h4 id="2-2-消息转发机制"><a href="#2-2-消息转发机制" class="headerlink" title="2.2 消息转发机制"></a>2.2 消息转发机制</h4><p>在Objective C的方法调用过程中，当无法响应一个selector时，在抛出异常之前会先进入消息转发机制。这里来详细讲解消息转发的过程：</p>
+<p>关于消息转发，官方文档在这里： <a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtForwarding.html#//apple_ref/doc/uid/TP40008048-CH105-SW2" target="_blank" rel="noopener">Message Forwarding</a></p>
+<p>其他参考<a href="https://yunwjr.github.io/2018/06/18/iOS-book-EffectiveObjective-C2.0-chap2/" target="_blank" rel="noopener">二、 消息转发</a></p>
+<p><img src="http://qnyunyun.yunsoho.cn/message%20forwarding.png" alt=""></p>
+<p>在触发消息转发机制即<code>forwardInvocation:</code>之前，Runtime提供了两步来进行轻量级的动态处理这个selector.</p>
+<ul>
+<li><strong>1. 动态方法 <code>resolveInstanceMethod:</code></strong></li>
+</ul>
+<blockquote>
+<p>Dynamically provides an implementation for a given selector for an instance method.</p>
+</blockquote>
+<p>这个方法提供了一个机会：为当前类无法识别的SEL动态增加IMP。</p>
+<p>比如：可以通过<code>class_addMethod</code>增加 IMP</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">void dynamicMethodIMP(id self, SEL _cmd) &#123;/*...implementation...*/&#125;</span><br><span class="line"></span><br><span class="line">+ (BOOL)resolveInstanceMethod:(SEL)aSEL &#123;</span><br><span class="line">    if (aSEL == @selector(resolveThisMethodDynamically)) &#123;</span><br><span class="line">        class_addMethod([self class], aSEL, (IMP) dynamicMethodIMP, &quot;v@:&quot;);</span><br><span class="line">        return YES;</span><br><span class="line">    &#125;</span><br><span class="line">    return [super resolveInstanceMethod:aSel];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// &quot;v@:&quot;表示方法参数编码，v表示Void，@表示OC对象，:表示SEL类型。</span><br></pre></td></tr></table></figure>
+<p>如果<code>resolveInstanceMethod</code>返回NO，则表示无法在这一步动态的添加方法，则进入下一步：</p>
+<ul>
+<li><strong>2. 备援接收者 <code>forwardingTargetForSelector:</code></strong></li>
+</ul>
+<blockquote>
+<p>Returns the object to which unrecognized messages should first be directed.</p>
+</blockquote>
+<p>这个方法提供了一个机会：把这个SEL转给其他接收者来处理。</p>
+<p>比如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- (id)forwardingTargetForSelector:(SEL)aSelector &#123;</span><br><span class="line">    if (aSelector == @selector(dynamicSelector) &amp;&amp;</span><br><span class="line">        [self.myObj respondsToSelector:@selector(dynamicSelector)]) &#123;</span><br><span class="line">        return self.myObj;</span><br><span class="line">    &#125;</span><br><span class="line">    else &#123;</span><br><span class="line">        return [super forwardingTargetForSelector:aSelector];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>3. 消息转发 message forwarding</strong></li>
+</ul>
+<p>如果上述两步都无法完成这个SEL的处理，则进入消息转发机制，消息转发机制有两个比较重要的方法：</p>
+<ul>
+<li>forwardInvocation: 具体的NSInvocaion</li>
+<li>methodSignatureForSelector: 返回SEL的方法签名</li>
+</ul>
+<p>这里不得不提一下两个类：</p>
+<ul>
+<li>NSMethodSignature 用来表示方法的参数签名信息：返回值，参数数量和类型</li>
+<li>NSInvocaion SEL + 执行SEL的Target + 参数值</li>
+</ul>
+<p>通常，拿到NSInvocaion对象后，我们可选择的进行如下操作</p>
+<ul>
+<li>修改执行的SEL</li>
+<li>修改执行的Target</li>
+<li>修改传入的参数</li>
+</ul>
+<p>然后调用：<code>[invocation invoke]</code>，来执行这个消息。</p>
+<p><strong><code>_objc_msgForward</code></strong></p>
+<p>我们知道，正常情况下SEL背后会对一个IMP，在OC中有一个特殊的IMP就是：<code>_objc_msgForward</code>。当执行<code>_objc_msgForward</code>时，会直接触发消息转发机制，即<code>forwardInvocation:</code>。</p>
+<h4 id="2-3-Method-Swizzling"><a href="#2-3-Method-Swizzling" class="headerlink" title="2.3 Method Swizzling"></a>2.3 Method Swizzling</h4><p>上一节已经介绍了Method Swizzling，可以替换SEL 对应的IMP。</p>
+<h4 id="2-4-Aspect-实现"><a href="#2-4-Aspect-实现" class="headerlink" title="2.4 Aspect 实现"></a>2.4 Aspect 实现</h4><p>使用Aspect，可以在一个OC方法执行前/后插入代码，也可以替换这个OC方法的实现。通过作者暴露的2个接口可以实现对实例和类的 Hook:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">+ (id&lt;AspectToken&gt;)aspect_hookSelector:(SEL)selector</span><br><span class="line">                           withOptions:(AspectOptions)options</span><br><span class="line">                            usingBlock:(id)block</span><br><span class="line">                                 error:(NSError **)error;</span><br><span class="line"> </span><br><span class="line">- (id&lt;AspectToken&gt;)aspect_hookSelector:(SEL)selector</span><br><span class="line">                           withOptions:(AspectOptions)options</span><br><span class="line">                            usingBlock:(id)block</span><br><span class="line">                                 error:(NSError **)error;</span><br></pre></td></tr></table></figure>
+<p>下面以在ViewControler的viewWillAppear:方法之后插入一段代码为例，来讲解hook前后的变化</p>
+<p><strong>1) 在没有hook之前，ViewController的SEL与IMP关系如下</strong></p>
+<p><img src="http://qnyunyun.yunsoho.cn/iOSAspect1.jpg?imageMogr2/thumbnail/!100p" alt=""></p>
+<p><strong>2) 调用以下aspect来Hook viewWillAppear:后</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[ViewController aspect_hookSelector:@selector(viewWillAppear:)</span><br><span class="line">                            withOptions:AspectPositionAfter</span><br><span class="line">                             usingBlock:^&#123;</span><br><span class="line">                                 NSLog(@&quot;Insert some code after ViewWillAppear&quot;);</span><br><span class="line">                             &#125; error:&amp;error];</span><br></pre></td></tr></table></figure>
+<p><img src="http://qnyunyun.yunsoho.cn/iOSAspect3.jpg?imageMogr2/thumbnail/!100p" alt=""></p>
+<ul>
+<li>最初的viewWillAppear: 指向了_objc_msgForward</li>
+<li>增加了aspects_viewWillAppear:,指向最初的viewWillAppear:的IMP</li>
+<li>最初的forwardInvocation:指向了Aspect提供的一个C方法<strong>ASPECTS_ARE_BEING_CALLED</strong></li>
+<li>动态增加了aspects_forwardInvocation:,指向最初的forwardInvocation:的IMP</li>
+</ul>
+<p><strong>3) hook后，一个viewWillAppear:的实际调用顺序：</strong></p>
+<ul>
+<li>object收到selector(viewWillAppear:)的消息</li>
+<li>找到对应的IMP：_objc_msgForward，执行后触发消息转发机制。</li>
+<li>object收到forwardInvocation:消息</li>
+<li>找到对应的IMP：<strong>ASPECTS_ARE_BEING_CALLED</strong>，执行IMP <ul>
+<li>向object对象发送aspects_viewWillAppear:,执行最初的viewWillAppear方法的IMP</li>
+<li>执行插入的block代码</li>
+<li>如果ViewController无法响应aspects_viewWillAppear，则向object对象发送__aspects_forwardInvocation:来执行最初的forwardInvocation IMP</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>所以，Aspects是采用了集中式的hook方式，所有的调用最后走的都是一个C函数<strong>ASPECTS_ARE_BEING_CALLED</strong>。</p>
+</blockquote>
+<h5 id="2-4-1-核心类-数据结构"><a href="#2-4-1-核心类-数据结构" class="headerlink" title="2.4.1 核心类/数据结构"></a>2.4.1 核心类/数据结构</h5><p><img src="http://qnyunyun.yunsoho.cn/iOSAspect5.jpg?imageMogr2/thumbnail/!100p" alt=""></p>
+<p><strong>1） Aspects 内部定义了两个协议：</strong></p>
+<ul>
+<li><strong>AspectToken</strong> </li>
+</ul>
+<p>AspectToken 协议旨在让使用者可以灵活的注销之前添加过的 Hook</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/// 用于注销 Hook</span><br><span class="line">@protocol AspectToken /// 注销一个 aspect.</span><br><span class="line">/// 返回 YES 表示注销成功，否则返回 NO</span><br><span class="line">- (BOOL)remove;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>AspectInfo</strong> </li>
+</ul>
+<p>AspectInfo 协议旨在规范对一个切面，即 aspect 的 Hook 内部信息的纰漏，在 Hook 时添加切面的 Block 第一个参数就遵守此协议。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">/// AspectInfo 协议是嵌入 Hook 的Block的第一个参数。</span><br><span class="line">@protocol AspectInfo /// 当前被 Hook 的实例</span><br><span class="line">- (id)instance;</span><br><span class="line">/// 被 Hook 方法的原始 invocation</span><br><span class="line">- (NSInvocation *)originalInvocation;</span><br><span class="line">/// 所有方法参数（装箱之后的）惰性执行</span><br><span class="line">- (NSArray *)arguments;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p><strong>2） Aspects 内部还定义了 4 个类：</strong></p>
+<ul>
+<li><strong>AspectInfo</strong> </li>
+</ul>
+<p>切面信息：NSInvocation的容器，表示一个执行的Command，遵循 AspectInfo 协议。AspectInfo 扮演了一个提供 Hook 信息的角色。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@interface AspectInfo : NSObject &lt;AspectInfo&gt;</span><br><span class="line">@property (nonatomic, unsafe_unretained, readonly) id instance;</span><br><span class="line">@property (nonatomic, strong, readonly) NSArray *arguments;</span><br><span class="line">@property (nonatomic, strong, readonly) NSInvocation *originalInvocation;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>AspectIdentifier</strong> </li>
+</ul>
+<p>切面 ID：代表一个Aspect的具体信息，包括被Hook的对象，SEL，插入的block等具体信息，遵循 AspectToken 协议。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@interface AspectIdentifier : NSObject</span><br><span class="line">@property (nonatomic, assign) SEL selector;</span><br><span class="line">@property (nonatomic, strong) id block;</span><br><span class="line">@property (nonatomic, strong) NSMethodSignature *blockSignature;</span><br><span class="line">@property (nonatomic, weak) id object;</span><br><span class="line">@property (nonatomic, assign) AspectOptions options;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>AspectContainer</strong> </li>
+</ul>
+<p>AspectIdentifier的容器：以SEL合成key，然后作为关联对象存储到对应的类/对象里。包括beforeAspects，insteadAspects，afterAspects</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@interface AspectsContainer : NSObject</span><br><span class="line">@property (atomic, copy) NSArray *beforeAspects;</span><br><span class="line">@property (atomic, copy) NSArray *insteadAspects;</span><br><span class="line">@property (atomic, copy) NSArray *afterAspects;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>AspectTracker</strong> </li>
+</ul>
+<p>切面跟踪器：跟踪一个类的继承链中的hook状态：包括被hook的类，哪些SEL被hook了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@interface AspectTracker : NSObject</span><br><span class="line">@property (nonatomic, strong) Class trackedClass;</span><br><span class="line">@property (nonatomic, readonly) NSString *trackedClassName;</span><br><span class="line">@property (nonatomic, strong) NSMutableSet *selectorNames;</span><br><span class="line">@property (nonatomic, strong) NSMutableDictionary *selectorNamesToSubclassTrackers;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>其原理大致为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// Add the selector as being modified.</span><br><span class="line">currentClass = klass;</span><br><span class="line">AspectTracker *parentTracker = nil;</span><br><span class="line">do &#123;</span><br><span class="line">    AspectTracker *tracker = swizzledClassesDict[currentClass];</span><br><span class="line">    if (!tracker) &#123;</span><br><span class="line">        tracker = [[AspectTracker alloc] initWithTrackedClass:currentClass parent:parentTracker];</span><br><span class="line">        swizzledClassesDict[(id)currentClass] = tracker;</span><br><span class="line">    &#125;</span><br><span class="line">    [tracker.selectorNames addObject:selectorName];</span><br><span class="line">    // All superclasses get marked as having a subclass that is modified.</span><br><span class="line">    parentTracker = tracker;</span><br><span class="line">&#125;while ((currentClass = class_getSuperclass(currentClass)));</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>AspectTracker 是从下而上追踪，最底层的 parentEntry 为 nil，父类的 parentEntry 为子类的 tracker。</p>
+</blockquote>
+<p><strong>3）一个结构体：</strong></p>
+<ul>
+<li>AspectBlockRef - 即 _AspectBlock，充当内部 Block</li>
+</ul>
+<p><strong>4）两个内部静态全局变量：</strong></p>
+<ul>
+<li>static NSMutableDictionary *swizzledClassesDict;</li>
+<li>static NSMutableSet *swizzledClasses;</li>
+</ul>
+<h5 id="2-4-2-hook过程"><a href="#2-4-2-hook过程" class="headerlink" title="2.4.2 hook过程"></a>2.4.2 hook过程</h5><p><strong>1. 对Class和MetaClass进行进行合法性检查，判断能否hook，规则如下</strong></p>
+<ul>
+<li>retain,release,autorelease,forwoardInvocation:不能被hook</li>
+<li>dealloc只能在方法前hook</li>
+<li>类的继承关系中，同一个方法只能被hook一次</li>
+</ul>
+<p><strong>2. 创建AspectsContainer对象，以aspects_ + SEL为key，作为关联对象依附到被hook 的对象上</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objc_setAssociatedObject(self, aliasSelector, aspectContainer, OBJC_ASSOCIATION_RETAIN);</span><br></pre></td></tr></table></figure>
+<p><strong>3. 创建AspectIdentifier对象，并且添加到AspectsContainer对象里存储起来。这个过程分为两步</strong> </p>
+<ul>
+<li>生成block的方法签名NSMethodSignature</li>
+<li>对比block的方法签名和待hook的方法签名是否兼容（参数个数，按照顺序的类型）</li>
+</ul>
+<p><strong>4. 根据hook实例对象/类对象／类元对象的方法做不同处理。其中，对于上文以类方法来hook的时候，分为两步</strong></p>
+<ul>
+<li>hook类对象的forwoardInvocation:方法，指向一个静态的C方法，并且创建一个aspects_ forwoardInvocation:动态添加到之前的类中</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">IMP originalImplementation = class_replaceMethod(klass, @selector(forwardInvocation:), (IMP)__ASPECTS_ARE_BEING_CALLED__, &quot;v@:@&quot;);</span><br><span class="line">if (originalImplementation) &#123;</span><br><span class="line">    class_addMethod(klass, NSSelectorFromString(AspectsForwardInvocationSelectorName), originalImplementation, &quot;v@:@&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>hook类对象的viewWillAppear:方法让其指向_objc_msgForward,动态添加aspects_viewWillAppear:指向最初的viewWillAppear:实现</li>
+</ul>
+<h5 id="2-4-3-Hook实例的方法"><a href="#2-4-3-Hook实例的方法" class="headerlink" title="2.4.3 Hook实例的方法"></a>2.4.3 Hook实例的方法</h5><blockquote>
+<p>Aspects支持只hook一个对象的实例方法</p>
+</blockquote>
+<p>只不过在第4步略有出入，当hook一个对象的实例方法的时候：</p>
+<ul>
+<li>新建一个子类，_Aspects_ViewController,并且按照上述的方式hook forwoardInvocation:</li>
+<li>hook _Aspects_ViewController的class方法，让其返回ViewController</li>
+<li>hook 子类的类元对象，让其返回ViewController</li>
+<li>调用objc_setClass来修改ViewController的类为_Aspects_ViewController</li>
+</ul>
+<blockquote>
+<p>这样做，就可以通过object_getClass(self)获得类名，然后看看是否有前缀类名来判断是否被hook过了</p>
+</blockquote>
+<h5 id="2-4-4-其他"><a href="#2-4-4-其他" class="headerlink" title="2.4.4 其他"></a>2.4.4 其他</h5><p><strong>1) object_getClass/与self.class的区别</strong></p>
+<ul>
+<li>object_getClass获得的是isa的指向</li>
+<li>self.class则不一样，当self是实例对象的时候，返回的是类对象，否则则返回自身。</li>
+</ul>
+<p>比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">TestClass * testObj = [[TestClass alloc] init];</span><br><span class="line">//Same</span><br><span class="line">logAddress([testObj class]);</span><br><span class="line">logAddress([TestClass class]);</span><br><span class="line"></span><br><span class="line">//Not same</span><br><span class="line">logAddress(object_getClass(testObj));</span><br><span class="line">logAddress(object_getClass([TestClass class]));</span><br></pre></td></tr></table></figure>
+<p>输出</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">2017-05-22 22:41:48.216 OCTest[899:25934] 0x107d10930</span><br><span class="line">2017-05-22 22:41:48.216 OCTest[899:25934] 0x107d10930</span><br><span class="line">2017-05-22 22:41:48.216 OCTest[899:25934] 0x107d10930</span><br><span class="line">2017-05-22 22:41:49.061 OCTest[899:25934] 0x107d10908</span><br></pre></td></tr></table></figure>
+<p><strong>2) Block签名</strong></p>
+<p>block因为背后其实是一个C结构体，结构体中存储着着一个函数指针来指向实际的方法体</p>
+<p>Block的内存布局如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_OPTIONS(int, AspectBlockFlags) &#123;</span><br><span class="line">    AspectBlockFlagsHasCopyDisposeHelpers = (1 &lt;&lt; 25),</span><br><span class="line">    AspectBlockFlagsHasSignature          = (1 &lt;&lt; 30)</span><br><span class="line">&#125;;</span><br><span class="line">typedef struct _AspectBlock &#123;</span><br><span class="line">    __unused Class isa;</span><br><span class="line">    AspectBlockFlags flags;</span><br><span class="line">    __unused int reserved;</span><br><span class="line">    void (__unused *invoke)(struct _AspectBlock *block, ...);</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned long int reserved;</span><br><span class="line">        unsigned long int size;</span><br><span class="line">        // requires AspectBlockFlagsHasCopyDisposeHelpers</span><br><span class="line">        void (*copy)(void *dst, const void *src);</span><br><span class="line">        void (*dispose)(const void *);</span><br><span class="line">        // requires AspectBlockFlagsHasSignature</span><br><span class="line">        const char *signature;</span><br><span class="line">        const char *layout;</span><br><span class="line">    &#125; *descriptor;</span><br><span class="line">    // imported variables</span><br><span class="line">&#125; *AspectBlockRef;</span><br></pre></td></tr></table></figure>
+<p>对应生成NSMethodSignature的方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">static NSMethodSignature *aspect_blockMethodSignature(id block, NSError **error) &#123;</span><br><span class="line">    AspectBlockRef layout = (__bridge void *)block;</span><br><span class="line">    if (!(layout-&gt;flags &amp; AspectBlockFlagsHasSignature)) &#123;</span><br><span class="line">        NSString *description = [NSString stringWithFormat:@&quot;The block %@ doesn&apos;t contain a type signature.&quot;, block];</span><br><span class="line">        AspectError(AspectErrorMissingBlockSignature, description);</span><br><span class="line">        return nil;</span><br><span class="line">    &#125;</span><br><span class="line">    void *desc = layout-&gt;descriptor;</span><br><span class="line">    desc += 2 * sizeof(unsigned long int);</span><br><span class="line">    if (layout-&gt;flags &amp; AspectBlockFlagsHasCopyDisposeHelpers) &#123;</span><br><span class="line">        desc += 2 * sizeof(void *);</span><br><span class="line">    &#125;</span><br><span class="line">    if (!desc) &#123;</span><br><span class="line">        NSString *description = [NSString stringWithFormat:@&quot;The block %@ doesn&apos;t has a type signature.&quot;, block];</span><br><span class="line">        AspectError(AspectErrorMissingBlockSignature, description);</span><br><span class="line">        return nil;</span><br><span class="line">    &#125;</span><br><span class="line">    const char *signature = (*(const char **)desc);</span><br><span class="line">    return [NSMethodSignature signatureWithObjCTypes:signature];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>3) 效率</strong></p>
+<blockquote>
+<p>消息转发机制相对于正常的方法调用来说是比较昂贵的，所以一定不要用消息转发机制来处理那些一秒钟成百上千次的调用。</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/03/iOS-adjust-iOS12/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yun">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yun's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/03/iOS-adjust-iOS12/" itemprop="url">
+                  iOS12 XCode10 适配
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-11-03 17:22:31" itemprop="dateCreated datePublished" datetime="2018-11-03T17:22:31+08:00">2018-11-03</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-11-23 17:24:09" itemprop="dateModified" datetime="2018-11-23T17:24:09+08:00">2018-11-23</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="iOS12-XCode10-适配"><a href="#iOS12-XCode10-适配" class="headerlink" title="iOS12 XCode10 适配"></a>iOS12 XCode10 适配</h1><h2 id="1-libstdc-弃用-报错Undefined-symbols"><a href="#1-libstdc-弃用-报错Undefined-symbols" class="headerlink" title="1. libstdc++弃用  报错Undefined symbols"></a>1. libstdc++弃用  报错Undefined symbols</h2><p> XCode10编译报错<code>ndefined symbols for architecture XXX</code>，如果你的工程中有libstdc++依赖（可从Linked Frameworks and Libraries 项查看），那么就会出现这类错误。</p>
+<p>因为苹果在XCode10和iOS12中移除了libstdc++这个库，由libc++这个库取而代之，苹果的解释是libstdc++已经标记为废弃有5年了，建议大家使用经过了llvm优化过并且全面支持C++11的libc++库。</p>
+<blockquote>
+<p>libstdc++.dylib是C++98版本的标准库实现动态库，而libc++.dylib是C++11版本的标准库实现动态库。libc++是一个更加新的C++标准库实现，它完全支持C++11标准。因此苹果弃用了libstdc++.dylib，这符合苹果一贯的作风。</p>
+</blockquote>
+<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><ul>
+<li><p><strong>最直接的是修改依赖库，支持libc++.dylib</strong></p>
+</li>
+<li><p><strong>临时方法</strong></p>
+<p>  将libstdc++.dylib拷贝到 XCode中，共四个地方</p>
+<p>  <a href="http://qnyuntmp.yunsoho.cn/libstdc++.zip" target="_blank" rel="noopener">libstdc++.dylib下载地址</a></p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo cp CoreSimulator/* /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/usr/lib/</span><br><span class="line">sudo cp MacOSX/* /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib/</span><br><span class="line">sudo cp iPhoneOS/* /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/lib/</span><br><span class="line">sudo cp iPhoneSimulator/* /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/usr/lib/</span><br></pre></td></tr></table></figure>
+<h2 id="2-UICollectionViewCell-高度计算不正确"><a href="#2-UICollectionViewCell-高度计算不正确" class="headerlink" title="2. UICollectionViewCell 高度计算不正确"></a>2. UICollectionViewCell 高度计算不正确</h2><p><strong>更新 iOS12后，一定要检查所有用到UICollectionViewCell的界面，因为UICollectionViewCell可能出现高度计算不正确的现象。</strong></p>
+<p>iOS12对AutoLayout做出了性能优化，但是更新 iOS12后，发现一些UICollectionViewCell的高度不正确，一时间也调试不出什么问题，因此就采用手动计算高度暂时解决。</p>
+<p>这里有一篇同样的问题，解决思路可供参考<a href="http://www.cocoachina.com/ios/20181023/25267.html" target="_blank" rel="noopener">链接</a></p>
+<h3 id="解决方法-1"><a href="#解决方法-1" class="headerlink" title="解决方法"></a>解决方法</h3><ul>
+<li><p><strong>1. 手动计算高度</strong></p>
+</li>
+<li><p><strong>2. 忽略 contentView，直接把 subView 加到 cell 上</strong></p>
+</li>
+</ul>
+<h2 id="3-StatusBar-网络状态"><a href="#3-StatusBar-网络状态" class="headerlink" title="3. StatusBar 网络状态"></a>3. StatusBar 网络状态</h2><p>如果app通过状态栏的网络状态指示器去判断手机当前联网状态，修改进行修改，因为iOS12 更改了StatusBar内部结构。</p>
+<p><a href="https://blog.csdn.net/wxs0124/article/details/80613847" target="_blank" rel="noopener">参考链接</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">+ (NSString *)getIphoneXNetWorkStates &#123;    </span><br><span class="line">    UIApplication *app = [UIApplication sharedApplication];</span><br><span class="line">    id statusBar = [[app valueForKeyPath:@&quot;statusBar&quot;] valueForKeyPath:@&quot;statusBar&quot;];</span><br><span class="line">    id one = [statusBar valueForKeyPath:@&quot;regions&quot;];</span><br><span class="line">    id two = [one valueForKeyPath:@&quot;trailing&quot;];</span><br><span class="line">    NSArray *three = [two valueForKeyPath:@&quot;displayItems&quot;];</span><br><span class="line">    NSString *state = @&quot;无网络&quot;;</span><br><span class="line">    for (UIView *view in three) &#123;</span><br><span class="line">        //alert: iOS12.0 情况下identifier的变成了类&quot;_UIStatusBarIdentifier&quot;而不是NSString，所以会在调用“isEqualToString”方法时发生crash，</span><br><span class="line">        //修改前</span><br><span class="line">//        NSString *identifier = [view valueForKeyPath:@&quot;identifier&quot;];</span><br><span class="line">        //修改后</span><br><span class="line">        NSString *identifier = [[view valueForKeyPath:@&quot;identifier&quot;] description];</span><br><span class="line">        if ([identifier isEqualToString:@&quot;_UIStatusBarWifiItem.signalStrengthDisplayIdentifier&quot;]) &#123;</span><br><span class="line">            id item = [view valueForKeyPath:@&quot;_item&quot;];</span><br><span class="line"></span><br><span class="line">            //alert: 这个问题和上边一样itemId是_UIStatusBarIdentifier 类型，不是string</span><br><span class="line">            NSString *itemId = [[item valueForKeyPath:@&quot;identifier&quot;] description];</span><br><span class="line">            if ([itemId isEqualToString:@&quot;_UIStatusBarWifiItem&quot;]) &#123;</span><br><span class="line">                state = @&quot;WIFI&quot;;</span><br><span class="line">            &#125;</span><br><span class="line">            state = @&quot;不确定&quot;;</span><br><span class="line"></span><br><span class="line">        &#125; else if ([identifier isEqualToString:@&quot;_UIStatusBarCellularItem.typeDisplayIdentifier&quot;]) &#123;</span><br><span class="line">            UIView *statusBarStringView = [view valueForKeyPath:@&quot;_view&quot;];</span><br><span class="line">            // 4G/3G/E</span><br><span class="line">            state = [statusBarStringView valueForKeyPath:@&quot;text&quot;];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return state;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="iOS12新功能"><a href="#iOS12新功能" class="headerlink" title="iOS12新功能"></a>iOS12新功能</h2><h3 id="1-刘海屏判断"><a href="#1-刘海屏判断" class="headerlink" title="1. 刘海屏判断"></a>1. 刘海屏判断</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define isNotchMobile ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? (CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size)||CGSizeEqualToSize(CGSizeMake(1242, 2688), [[UIScreen mainScreen] currentMode].size)||CGSizeEqualToSize(CGSizeMake(828, 1792), [[UIScreen mainScreen] currentMode].size)) : NO)</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/12/iOS-book-EffectiveObjective-C2.0-chap7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Author">
+      <meta itemprop="name" content="Yun">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
@@ -323,7 +936,7 @@
                 
               
 
-              <time title="Post created:2018-10-12 21:43:22" itemprop="dateCreated datePublished" datetime="2018-10-12T21:43:22+08:00">2018-10-12</time>
+              <time title="Created: 2018-10-12 21:43:22" itemprop="dateCreated datePublished" datetime="2018-10-12T21:43:22+08:00">2018-10-12</time>
             
 
             
@@ -340,7 +953,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Post modified:2018-10-27 21:22:53" itemprop="dateModified" datetime="2018-10-27T21:22:53+08:00">2018-10-27</time>
+                <time title="Modified: 2018-11-05 10:03:49" itemprop="dateModified" datetime="2018-11-05T10:03:49+08:00">2018-11-05</time>
               
             
           </span>
@@ -547,7 +1160,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/07/iOS-book-EffectiveObjective-C2.0-chap6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Author">
+      <meta itemprop="name" content="Yun">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
@@ -590,7 +1203,7 @@
                 
               
 
-              <time title="Post created:2018-10-07 21:11:45" itemprop="dateCreated datePublished" datetime="2018-10-07T21:11:45+08:00">2018-10-07</time>
+              <time title="Created: 2018-10-07 21:11:45" itemprop="dateCreated datePublished" datetime="2018-10-07T21:11:45+08:00">2018-10-07</time>
             
 
             
@@ -607,7 +1220,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Post modified:2018-10-27 21:21:53" itemprop="dateModified" datetime="2018-10-27T21:21:53+08:00">2018-10-27</time>
+                <time title="Modified: 2018-11-05 10:03:49" itemprop="dateModified" datetime="2018-11-05T10:03:49+08:00">2018-11-05</time>
               
             
           </span>
@@ -878,7 +1491,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/03/iOS-book-EffectiveObjective-C2.0-chap5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Author">
+      <meta itemprop="name" content="Yun">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
@@ -921,7 +1534,7 @@
                 
               
 
-              <time title="Post created:2018-10-03 22:12:32" itemprop="dateCreated datePublished" datetime="2018-10-03T22:12:32+08:00">2018-10-03</time>
+              <time title="Created: 2018-10-03 22:12:32" itemprop="dateCreated datePublished" datetime="2018-10-03T22:12:32+08:00">2018-10-03</time>
             
 
             
@@ -938,7 +1551,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Post modified:2018-10-27 21:21:15" itemprop="dateModified" datetime="2018-10-27T21:21:15+08:00">2018-10-27</time>
+                <time title="Modified: 2018-11-05 10:03:49" itemprop="dateModified" datetime="2018-11-05T10:03:49+08:00">2018-11-05</time>
               
             
           </span>
@@ -1233,7 +1846,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/24/iOS-book-EffectiveObjective-C2.0-chap4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Author">
+      <meta itemprop="name" content="Yun">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
@@ -1276,7 +1889,7 @@
                 
               
 
-              <time title="Post created:2018-09-24 20:11:32" itemprop="dateCreated datePublished" datetime="2018-09-24T20:11:32+08:00">2018-09-24</time>
+              <time title="Created: 2018-09-24 20:11:32" itemprop="dateCreated datePublished" datetime="2018-09-24T20:11:32+08:00">2018-09-24</time>
             
 
             
@@ -1293,7 +1906,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Post modified:2018-10-27 21:30:16" itemprop="dateModified" datetime="2018-10-27T21:30:16+08:00">2018-10-27</time>
+                <time title="Modified: 2018-11-05 10:03:49" itemprop="dateModified" datetime="2018-11-05T10:03:49+08:00">2018-11-05</time>
               
             
           </span>
@@ -1458,7 +2071,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/20/iOS-book-EffectiveObjective-C2.0-chap3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Author">
+      <meta itemprop="name" content="Yun">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
@@ -1501,7 +2114,7 @@
                 
               
 
-              <time title="Post created:2018-09-20 14:12:31" itemprop="dateCreated datePublished" datetime="2018-09-20T14:12:31+08:00">2018-09-20</time>
+              <time title="Created: 2018-09-20 14:12:31" itemprop="dateCreated datePublished" datetime="2018-09-20T14:12:31+08:00">2018-09-20</time>
             
 
             
@@ -1518,7 +2131,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Post modified:2018-10-27 21:19:35" itemprop="dateModified" datetime="2018-10-27T21:19:35+08:00">2018-10-27</time>
+                <time title="Modified: 2018-11-05 10:03:49" itemprop="dateModified" datetime="2018-11-05T10:03:49+08:00">2018-11-05</time>
               
             
           </span>
@@ -1720,7 +2333,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/13/hackintosh-summary/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Author">
+      <meta itemprop="name" content="Yun">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
@@ -1763,7 +2376,7 @@
                 
               
 
-              <time title="Post created:2018-09-13 18:22:42" itemprop="dateCreated datePublished" datetime="2018-09-13T18:22:42+08:00">2018-09-13</time>
+              <time title="Created: 2018-09-13 18:22:42" itemprop="dateCreated datePublished" datetime="2018-09-13T18:22:42+08:00">2018-09-13</time>
             
 
             
@@ -1780,7 +2393,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Post modified:2018-10-27 21:00:22" itemprop="dateModified" datetime="2018-10-27T21:00:22+08:00">2018-10-27</time>
+                <time title="Modified: 2018-09-26 17:21:34" itemprop="dateModified" datetime="2018-09-26T17:21:34+08:00">2018-09-26</time>
               
             
           </span>
@@ -1941,7 +2554,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/11/springcloud-summary/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Author">
+      <meta itemprop="name" content="Yun">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
@@ -1984,7 +2597,7 @@
                 
               
 
-              <time title="Post created:2018-08-11 20:41:32" itemprop="dateCreated datePublished" datetime="2018-08-11T20:41:32+08:00">2018-08-11</time>
+              <time title="Created: 2018-08-11 20:41:32" itemprop="dateCreated datePublished" datetime="2018-08-11T20:41:32+08:00">2018-08-11</time>
             
 
             
@@ -2001,7 +2614,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Post modified:2018-10-27 21:42:30" itemprop="dateModified" datetime="2018-10-27T21:42:30+08:00">2018-10-27</time>
+                <time title="Modified: 2018-11-05 10:03:49" itemprop="dateModified" datetime="2018-11-05T10:03:49+08:00">2018-11-05</time>
               
             
           </span>
@@ -2204,7 +2817,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/18/iOS-book-EffectiveObjective-C2.0-chap2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Author">
+      <meta itemprop="name" content="Yun">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
@@ -2247,7 +2860,7 @@
                 
               
 
-              <time title="Post created:2018-06-18 11:22:23" itemprop="dateCreated datePublished" datetime="2018-06-18T11:22:23+08:00">2018-06-18</time>
+              <time title="Created: 2018-06-18 11:22:23" itemprop="dateCreated datePublished" datetime="2018-06-18T11:22:23+08:00">2018-06-18</time>
             
 
             
@@ -2264,7 +2877,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Post modified:2018-10-27 21:00:22" itemprop="dateModified" datetime="2018-10-27T21:00:22+08:00">2018-10-27</time>
+                <time title="Modified: 2018-10-10 17:03:19" itemprop="dateModified" datetime="2018-10-10T17:03:19+08:00">2018-10-10</time>
               
             
           </span>
@@ -2585,439 +3198,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/16/iOS-book-EffectiveObjective-C2.0-chap1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Author">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yun's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/16/iOS-book-EffectiveObjective-C2.0-chap1/" itemprop="url">
-                  EffectiveObjective-C2.0 笔记 - 第一部分
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Post created:2018-06-16 14:25:22" itemprop="dateCreated datePublished" datetime="2018-06-16T14:25:22+08:00">2018-06-16</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Post modified:2018-10-27 21:00:22" itemprop="dateModified" datetime="2018-10-27T21:00:22+08:00">2018-10-27</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="EffectiveObjective-C2-0-笔记-第一部分"><a href="#EffectiveObjective-C2-0-笔记-第一部分" class="headerlink" title="EffectiveObjective-C2.0 笔记 - 第一部分"></a>EffectiveObjective-C2.0 笔记 - 第一部分</h1><hr>
-<h1 id="1-1-了解Objective-C"><a href="#1-1-了解Objective-C" class="headerlink" title="1.1-了解Objective-C"></a>1.1-了解Objective-C</h1><h2 id="了解Objective-C-语言的起源"><a href="#了解Objective-C-语言的起源" class="headerlink" title="了解Objective-C 语言的起源"></a>了解Objective-C 语言的起源</h2><p><strong>1. Objective-C（以下简称Oc）是在C语言的基础上添加了面向对象特性。</strong></p>
-<blockquote>
-<p>Oc是C语言的超集（superset），因此C语言的所有功能特性都可以适用于Oc。</p>
-</blockquote>
-<p><strong>2. Oc是使用“消息结构”（messaging structure)，而非常见的“函数调用”（function calling）。它们区别像这样</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// message structure </span><br><span class="line">Object *obj = [Object new];</span><br><span class="line">[obj performWith:para1 and:para2]</span><br><span class="line"></span><br><span class="line">// 其特性就是“运行时组件（Runtime）”，其本质上就是一种与开发者所编代码相链接的 “动态库”（dynamic libary），其代码能把开发者编写的所有程序粘合起来。</span><br><span class="line">// 运行时所执行的代码由运行环境决定，动态特性明显，但是有些问题编译期间无法发现。</span><br><span class="line">// 所有方法，都是运行时去查找，运行。接收消息的对象也要在运行时去查找。这时候就可能出问题。见后面。</span><br><span class="line"></span><br><span class="line">// functions calling</span><br><span class="line">Object *obj = new Object;</span><br><span class="line">obj-&gt;perform(para1,para2);</span><br><span class="line"></span><br><span class="line">// 与消息型相反，函数方法都有编译器编译的时候实现，可以预先发现一些潜在问题。</span><br><span class="line">// 运行时所执行的代码由编译器决定；</span><br><span class="line">// 如果是多态方法，运行时就会去“虚方法表（virtual table）”查找出具体哪一个函数；</span><br></pre></td></tr></table></figure>
-<p><strong>3. Oc中的对象总是分配在“堆空间”（heap space），不会分配到“栈”（stack）上。</strong></p>
-<blockquote>
-<p>Oc 将堆内存管理抽象出来了，不需要用malloc 及free 来分配或释放对象所占内存，Oc<br>运行期环境把这部分工作抽象成一套内存管理架构，叫 ”引用计数“ 。一个例子</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSString *someString = @&quot;The string&quot;;</span><br><span class="line">NSString *anotherString = someString;</span><br></pre></td></tr></table></figure>
-<p><img src="http://ot8psglzx.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180914225911.png" alt="image"></p>
-<p><strong>4. 能用C的结构体，不用对象，结构体比对象更有效率。</strong></p>
-<blockquote>
-<p>对象要分配空间，释放空间,而结构体不需要。结构体储存在栈空间。</p>
-</blockquote>
-<p><strong>5. 非对象类型（nonobject type），分配在栈上，在其栈帧弹出时自动清理。</strong></p>
-<h1 id="1-2-头文件"><a href="#1-2-头文件" class="headerlink" title="1.2-头文件"></a>1.2-头文件</h1><p><strong>核心点：在类的头文件中尽量少引用其他头文件</strong></p>
-<p><strong>1. Oc 中编写类方式与 C和C++一样，使用头文件（header file）、实现文件（implementation file）来区隔代码。</strong></p>
-<p><strong>2. 引用其他类，使用@class xxx的向前声明方式（forward declaring）。</strong></p>
-<blockquote>
-<p>也可以使用#import或#include，但是不够优雅，这里就要知道引用 类的具体细节，这里会引用到引用类的具体实现，会增加编译时间。使用@clss 还可以减少两个类之间的耦合。</p>
-</blockquote>
-<p><strong>3.应该将引入头文件的时机尽量延后（放在实现文件），只有确有需要的时候才引用，这样子可以减少类的使用者所需引用的头文件数量。缩短编译时间。</strong></p>
-<ul>
-<li><p>可以使用@class时，首选@class。</p>
-</li>
-<li><p>只有在迫不得已的时候才用#import (如：继承，实现协议)。</p>
-</li>
-<li><p>协议建议放在单独的一个头文件。避免引入协议时，引入头文件中等其他内容。</p>
-</li>
-<li><p>使用@class 可以减少.h中对其他类的依赖、减少链接到其他类所需要的时间，从而降低编译时间。</p>
-</li>
-</ul>
-<p><strong>4. 两个类互相引用时： A类中引用B类，B类中也引用A类。必须用@class，不然会出现循环引用。</strong></p>
-<h3 id="用-import-而不用-include"><a href="#用-import-而不用-include" class="headerlink" title="用#import 而不用 #include"></a>用#import 而不用 #include</h3><ul>
-<li><p>import可以避免重复引用</p>
-</li>
-<li><p>如果用#include的话，需要进行避免重复的宏定义</p>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#ifndef HEADER</span><br><span class="line">#define HEADER</span><br><span class="line"></span><br><span class="line">xxx</span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
-<h1 id="1-3-字面量语法、常量、枚举"><a href="#1-3-字面量语法、常量、枚举" class="headerlink" title="1.3-字面量语法、常量、枚举"></a>1.3-字面量语法、常量、枚举</h1><h2 id="一、尽量用字面量语法，便于理解"><a href="#一、尽量用字面量语法，便于理解" class="headerlink" title="一、尽量用字面量语法，便于理解"></a>一、尽量用字面量语法，便于理解</h2><p><strong>1. 字面数值</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 字面量语法</span><br><span class="line">NSNumber *itemNo = @1;</span><br><span class="line"></span><br><span class="line">// 传统声明</span><br><span class="line">NSNumber *itemNo = [NSNumber numberWithInt:1];</span><br></pre></td></tr></table></figure>
-<p><strong>2. 字面量数组</strong></p>
-<p>不能有nil值，nil值为结尾标示</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">NSArray *arr1 = @[@&quot;1&quot;,@&quot;2&quot;];</span><br><span class="line"></span><br><span class="line">NSArray *arr2 = [NSArray arrayWithObjects:@&quot;1&quot;,@&quot;2&quot;,nil]; // 注意nil结尾</span><br></pre></td></tr></table></figure>
-<p><strong>3. 字面量字典</strong></p>
-<p>不能有nil值，nil值为结尾标示</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSDictionary *dic = @&#123;@&quot;key1&quot;:@&quot;val1&quot;,</span><br><span class="line">                      @&quot;key2&quot;:@&quot;val2&quot;&#125;;</span><br></pre></td></tr></table></figure>
-<p><strong>4. 可变数组和字典</strong></p>
-<p>字面创建的都是不可变类型，如果想创建可变类型，需要mutableCopy</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSMutableDictionary *dic = [@&#123;@&quot;key1&quot;:@&quot;val1&quot;,</span><br><span class="line">                              @&quot;key2&quot;:@&quot;val2&quot;&#125; mutableCopy];</span><br></pre></td></tr></table></figure>
-<p><strong>5. 字符串字面量创建的是常量，对象不在持有了也不会立马被释放</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// Oc会做字符串的编译单元，而且会合并相同字符串的编译单元，来减少额外的消耗去链接这些编译单元。</span><br><span class="line"></span><br><span class="line">NSString str1 = @“i am yun”;</span><br><span class="line">NSString str2 = @“i am yun”;</span><br><span class="line"></span><br><span class="line">// 此时，str1跟str2内存地址是一样的。</span><br><span class="line"></span><br><span class="line">// 字符串常量创建后，不再修改。即使引用它的对象不再指向它，字符串常量也不会立即施放。</span><br></pre></td></tr></table></figure>
-<h2 id="二、-多用类型常量，少用预处理"><a href="#二、-多用类型常量，少用预处理" class="headerlink" title="二、 多用类型常量，少用预处理"></a>二、 多用类型常量，少用预处理</h2><p><strong>1. 不要用预处理命令定义常量，用静态常量代替</strong></p>
-<p>预处理命令定义的，不含有类型信息</p>
-<p><strong>2. 类内使用的常量，定义在实现文件，可用k做前缀</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// in the implementation file</span><br><span class="line">static const int kTimeItv = 1;</span><br></pre></td></tr></table></figure>
-<p><strong>3. 如果需要其他类引用常量，在接口用extern定义，在实现文件实现，可用类名做前缀，如通知键值</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// in the interface</span><br><span class="line">extern const NSString *notiKey;</span><br><span class="line"></span><br><span class="line">// in the implementation file</span><br><span class="line">const  NSString *notiKey = @&quot;notiKey&quot;;</span><br></pre></td></tr></table></figure>
-<p><strong>4. 编译器会在 “数据段”（data section）为字符串分配存储空间，这里在上面C 语言的内存模型有讲，数据段通常是指用来存放程序中已初始化的全局变量的一块内存区域。数据段属于静态内存分配。</strong></p>
-<h2 id="三、-用枚举表示状态、选项、状态码"><a href="#三、-用枚举表示状态、选项、状态码" class="headerlink" title="三、 用枚举表示状态、选项、状态码"></a>三、 用枚举表示状态、选项、状态码</h2><p><strong>1. 用宏来定义枚举类型</strong></p>
-<p>这些宏具备向后兼容（backward compatibility）能力，如果目标平台编译器支持新标准，那就使用新式语法，否则改用旧式语法。</p>
-<ul>
-<li>NS_ENUM宏 定义通用枚举</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_ENUM(NSInteger, NSWritingDirection) &#123;</span><br><span class="line">    NSWritingDirectionNatural     = -1,  //值为-1    </span><br><span class="line">    NSWritingDirectionLeftToRight = 0,   //值为0</span><br><span class="line">    NSWritingDirectionRightToLeft = 1    //值为1       </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>NS_OPTIONS宏 定义位移枚举</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_OPTIONS(NSUInteger, UISwipeGestureRecognizerDirection) &#123;</span><br><span class="line">    UISwipeGestureRecognizerDirectionNone  = 0,       //值为0</span><br><span class="line">    UISwipeGestureRecognizerDirectionRight = 1 &lt;&lt; 0,  //值为2的0次方</span><br><span class="line">    UISwipeGestureRecognizerDirectionLeft  = 1 &lt;&lt; 1,  //值为2的1次方</span><br><span class="line">    UISwipeGestureRecognizerDirectionUp    = 1 &lt;&lt; 2,  //值为2的2次方</span><br><span class="line">    UISwipeGestureRecognizerDirectionDown  = 1 &lt;&lt; 3   //值为2的3次方</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p><strong>2. 在switch 语句中，最好不要有default 分支，这样子要做到处理所有样式，这样子在新家类型的时候，没有default 编译器会发出警告，让我们注意到。</strong></p>
-<p><strong>3. 实现枚举所用的数据类型取决于编译器，不过其二进制位（bit）的个数必须能完全表示下枚举编号才行，一个字节含8个二进制位，所以至多能表示256（2^8^）个枚举变量。</strong></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/21/iOS-exception-img-on-iOS9/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Author">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yun's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/21/iOS-exception-img-on-iOS9/" itemprop="url">
-                  iOS9 因为图片莫名闪退
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Post created:2018-05-21 17:40:47" itemprop="dateCreated datePublished" datetime="2018-05-21T17:40:47+08:00">2018-05-21</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Post modified:2018-10-27 21:00:22" itemprop="dateModified" datetime="2018-10-27T21:00:22+08:00">2018-10-27</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="iOS9-因为图片莫名闪退"><a href="#iOS9-因为图片莫名闪退" class="headerlink" title="iOS9 因为图片莫名闪退"></a>iOS9 因为图片莫名闪退</h1><blockquote>
-<p>一般错误信息与图片相关，如</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-[CUIStrucTuredThemeStore renditionWithKey:usingKeySignature:]</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>仅在 iOS9及一下系统出现</p>
-</blockquote>
-<h3 id="问题说明"><a href="#问题说明" class="headerlink" title="问题说明"></a>问题说明</h3><p>ios9.3以下系统不支持非RGB 色域的图片，需要排查所有图片。</p>
-<h3 id="排查步骤"><a href="#排查步骤" class="headerlink" title="排查步骤"></a>排查步骤</h3><h4 id="1-获取ipa-文件"><a href="#1-获取ipa-文件" class="headerlink" title="1. 获取ipa 文件"></a>1. 获取ipa 文件</h4><ol>
-<li><p>直接从 Xcode 导出</p>
-</li>
-<li><p>从 iTuns 下载（没找到在哪儿）</p>
-</li>
-</ol>
-<h4 id="2-获取Assets-car文件"><a href="#2-获取Assets-car文件" class="headerlink" title="2. 获取Assets.car文件"></a>2. 获取Assets.car文件</h4><ol>
-<li>解压ipa, 找到 Payload 中的 .app 文件, 显示包内容，找到 Assets.car 文件，拷贝到工作目录。</li>
-</ol>
-<h4 id="3-获取asset-json文件"><a href="#3-获取asset-json文件" class="headerlink" title="3. 获取asset.json文件"></a>3. 获取asset.json文件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd 工作目录</span><br><span class="line"></span><br><span class="line">sudo xcrun --sdk iphoneos assetutil --info ./Assets.car &gt; asset.json</span><br><span class="line"></span><br><span class="line">输入密码，生成asset.json文件</span><br></pre></td></tr></table></figure>
-<h4 id="4-查找非-RBG图片"><a href="#4-查找非-RBG图片" class="headerlink" title="4. 查找非 RBG图片"></a>4. 查找非 RBG图片</h4><p>查询 asset.json文件中的”DisplayGamut” : “P3”，即为不能用的图片</p>
-<h3 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h3><p>在查阅资料时发现, 很多资料都提到过在项目中运行一个脚本将P3图片进行转换, 由于此种方法朕没有实际验证过, 所以只做个摘录</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash DIRECTORY=$1 echo &quot;----Passed Resources with xcassets folder argument is &lt;$DIRECTORY&gt;&quot; echo &quot;----Processing asset:&quot;</span><br><span class="line"></span><br><span class="line">find &quot;$DIRECTORY&quot; -name &apos;*png&apos; -print0 | while read -d $&apos;\0&apos; file; do echo &quot;---------$file&quot; sips -m &quot;/System/Library/Colorsync/Profiles/sRGB Profile.icc&quot; &quot;$file&quot; --out &quot;$file&quot; done</span><br><span class="line"></span><br><span class="line">echo &quot;----script successfully finished&quot;</span><br></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3054,7 +3234,7 @@
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
-              <p class="site-author-name" itemprop="name">Author</p>
+              <p class="site-author-name" itemprop="name">Yun</p>
               <p class="site-description motion-element" itemprop="description"></p>
           </div>
 
@@ -3065,7 +3245,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">17</span>
+                    <span class="site-state-item-count">19</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -3175,7 +3355,7 @@
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">Author</span>
+  <span class="author" itemprop="copyrightHolder">Yun</span>
 
   
 
