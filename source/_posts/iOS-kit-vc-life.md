@@ -9,7 +9,7 @@ tags: [iOS,UIKit]
 
 **UIViewController 生命周期的主要包括9个方法：**
 
-![](http://ot8psglzx.bkt.clouddn.com/VcLife.png?imageMogr2/thumbnail/!70p)
+![](http://qnyunyun.yunsoho.cn/VcLife.png?imageMogr2/thumbnail/!70p)
 
 
 ## init

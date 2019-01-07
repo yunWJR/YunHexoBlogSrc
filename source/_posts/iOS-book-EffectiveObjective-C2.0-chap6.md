@@ -46,7 +46,7 @@ tags: [iOS,Effective Objective-C 2.0]
 
 **1. 块本身也是对象，在存放块对象的内存区域中，首个变量是指向Class 对象的指针(isa 指针)。**
 
-   ![](http://ot8psglzx.bkt.clouddn.com/adadsa.png)
+   ![](http://qnyunyun.yunsoho.cn/adadsa.png)
 
 **2. invoke 变量是这个函数指针，指向块的实现代码。**
 
@@ -314,7 +314,6 @@ tags: [iOS,Effective Objective-C 2.0]
 2. 由于派发队列是按层级来组织的，所以无法单用某个队列对象来描述 “当前队列” 这一概念。
 
 3. dispatch_get_current_queue 函数用于解决由不可重入的代码引发的死锁，然而能用此函数的解决的问题，通常也能改用 “队列特定数据” 来解决。
-
 
 
 

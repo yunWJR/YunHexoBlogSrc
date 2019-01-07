@@ -47,13 +47,14 @@ NSString *anotherString = someString;
 
 ```
 
-![image](http://ot8psglzx.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180914225911.png)
+![image](http://qnyunyun.yunsoho.cn/QQ%E6%88%AA%E5%9B%BE20180914225911.png)
 
 **4. 能用C的结构体，不用对象，结构体比对象更有效率。**
 
 > 对象要分配空间，释放空间,而结构体不需要。结构体储存在栈空间。
 
 **5. 非对象类型（nonobject type），分配在栈上，在其栈帧弹出时自动清理。**
+
 
 # 1.2-头文件
 

@@ -29,11 +29,11 @@ tags: [iOS,Objective-C,总结]
 
 #### 3. 勾选如图选项：点击 Next
 
-![](http://ot8psglzx.bkt.clouddn.com/WX20180521-170859.png?imageMogr2/thumbnail/!70p)
+![](http://qnyunyun.yunsoho.cn/WX20180521-170859.png?imageMogr2/thumbnail/!70p)
 
 #### 4. 填写相关项，需要 https 协议的链接，可用 github 仓库。
 
-![](http://ot8psglzx.bkt.clouddn.com/WX20180521-171144.png?imageMogr2/thumbnail/!70p)
+![](http://qnyunyun.yunsoho.cn/WX20180521-171144.png?imageMogr2/thumbnail/!70p)
 
 #### 5. 根据情况执行后续操作，得到manifest.plist文件。上传到服务器，可选择 git。
 

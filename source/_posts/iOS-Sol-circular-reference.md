@@ -5,6 +5,8 @@ categories: iOS
 tags: [iOS,Objective-C,总结]
 ---
 
+
+
 # iOS中的循环引用
 
 ## 1. 概述
@@ -103,7 +105,7 @@ bVc = self;
 
 NSTimer 的 target 对传入的参数都是强引用（即使是 weak 对象）
 
-![](http://ot8psglzx.bkt.clouddn.com/784630-28d5d03d2d902860.png?imageMogr2/thumbnail/!70p)
+![](http://qnyunyun.yunsoho.cn/784630-28d5d03d2d902860.png?imageMogr2/thumbnail/!70p)
 
 解决办法: 《Effective Objective-C 》中的52条方法
 

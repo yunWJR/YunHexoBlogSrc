@@ -7,7 +7,6 @@ tags: [java, SpringCloud]
 
 # SpringCloud 概述
 
-
 ## 微服务
 
 微服务是一个小的、松耦合的分布式服务。
@@ -115,6 +114,11 @@ tags: [java, SpringCloud]
 > 凤凰服务器（Phoenix server）
 
 	服务长期一致性。
+
+
+![](http://qnyunyun.yunsoho.cn/20180626135647743.jpeg?imageMogr2/thumbnail/!100p)
+
+
 
 
 
