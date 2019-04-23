@@ -277,7 +277,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/30/iOS-kits/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/11/springcloud-summary/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Yun">
@@ -296,7 +296,271 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/01/30/iOS-kits/" itemprop="url">
+                <a class="post-title-link" href="/2019/01/11/springcloud-summary/" itemprop="url">
+                  SpringCloud 概述
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-01-11 20:41:32" itemprop="dateCreated datePublished" datetime="2019-01-11T20:41:32+08:00">2019-01-11</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-04-23 08:30:21" itemprop="dateModified" datetime="2019-04-23T08:30:21+08:00">2019-04-23</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/SpringCloud/" itemprop="url" rel="index"><span itemprop="name">SpringCloud</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="SpringCloud-概述"><a href="#SpringCloud-概述" class="headerlink" title="SpringCloud 概述"></a>SpringCloud 概述</h1><h2 id="微服务"><a href="#微服务" class="headerlink" title="微服务"></a>微服务</h2><p>微服务是一个小的、松耦合的分布式服务。</p>
+<h3 id="1、微服务的基础问题"><a href="#1、微服务的基础问题" class="headerlink" title="1、微服务的基础问题"></a>1、微服务的基础问题</h3><blockquote>
+<p>服务粒度</p>
+</blockquote>
+<ul>
+<li>服务职责单一</li>
+<li>服务无状态话</li>
+<li>操作表不能太多（3-5个）</li>
+<li>避免简单的 CRUD服务</li>
+</ul>
+<blockquote>
+<p>通信协议</p>
+</blockquote>
+<blockquote>
+<p>接口设计</p>
+</blockquote>
+<ul>
+<li>RESTful 风格接口</li>
+<li>内容使用 JSON</li>
+<li>HTTP 状态码表示结果</li>
+</ul>
+<blockquote>
+<p>服务的配置管理 – Config</p>
+</blockquote>
+<pre><code>统一配置服务器，避免配置与服务硬绑定。
+</code></pre><blockquote>
+<p>服务之间的事件处理 – Stream</p>
+</blockquote>
+<pre><code>使用事件解耦微服务，最小化服务之间的硬编码依赖。
+</code></pre><h3 id="2、微服务路由模式"><a href="#2、微服务路由模式" class="headerlink" title="2、微服务路由模式"></a>2、微服务路由模式</h3><p>负责处理客服端的服务请求，使其到达特定实例。</p>
+<blockquote>
+<p>服务路由（网关） – Netflix Zuul</p>
+</blockquote>
+<pre><code>为所有服务提供单个入口点，可整合安全策略、路由规则等。
+</code></pre><blockquote>
+<p>服务发现 – Netflix Eureka</p>
+</blockquote>
+<pre><code>微服务注册中心、管理服务。
+</code></pre><h3 id="3、客服端弹性模式"><a href="#3、客服端弹性模式" class="headerlink" title="3、客服端弹性模式"></a>3、客服端弹性模式</h3><p>避免单个服务影响整个系统，提高服务稳定性。</p>
+<blockquote>
+<p>客服端负载均衡 – Neflix Ribbon</p>
+</blockquote>
+<pre><code>负载均衡，避免单个服务过载
+</code></pre><blockquote>
+<p>断路器模式 – Netflix Hystrix</p>
+</blockquote>
+<pre><code>阻止客户继续调用出故障/有性能问题的服务
+</code></pre><blockquote>
+<p>后备模式 – Netflix Hystrix</p>
+</blockquote>
+<pre><code>服务调用失败后，提供后备方案
+</code></pre><blockquote>
+<p>舱壁模式 – Netflix Hystrix</p>
+</blockquote>
+<pre><code>避免个别微服务故障影响整个服务。
+</code></pre><h3 id="4、微服务安全"><a href="#4、微服务安全" class="headerlink" title="4、微服务安全"></a>4、微服务安全</h3><blockquote>
+<p>验证 – Security/OAuth2</p>
+</blockquote>
+<pre><code>身份验证
+</code></pre><blockquote>
+<p>授权 – Security/OAuth2</p>
+</blockquote>
+<pre><code>权限验证
+</code></pre><blockquote>
+<p>凭据管理和传播  – Security/OAuth2 JWT</p>
+</blockquote>
+<pre><code>验证的模式 -JWT
+</code></pre><h3 id="5、微服务日志记录与跟踪模式"><a href="#5、微服务日志记录与跟踪模式" class="headerlink" title="5、微服务日志记录与跟踪模式"></a>5、微服务日志记录与跟踪模式</h3><blockquote>
+<p>日志关联 – Sleuth</p>
+</blockquote>
+<pre><code>关联请求在所有微服务中的调用链。
+</code></pre><blockquote>
+<p>日志聚合 – Sleuth、Papertrail</p>
+</blockquote>
+<pre><code>将所有微服务的日志聚合到一起
+</code></pre><blockquote>
+<p>微服务跟踪 – Sleuth/Zipkin</p>
+</blockquote>
+<pre><code>跟踪微服务的事物流程，以及其性能。
+</code></pre><h3 id="6、微服务构建和部署"><a href="#6、微服务构建和部署" class="headerlink" title="6、微服务构建和部署"></a>6、微服务构建和部署</h3><blockquote>
+<p>构建和部署管道</p>
+</blockquote>
+<pre><code>可重复的构建和部署过程。
+</code></pre><blockquote>
+<p>基础设施即代码</p>
+</blockquote>
+<blockquote>
+<p>不可变服务器</p>
+</blockquote>
+<pre><code>部署之后永远不会改变
+</code></pre><blockquote>
+<p>凤凰服务器（Phoenix server）</p>
+</blockquote>
+<pre><code>服务长期一致性。
+</code></pre><p><img src="http://qnyunyun.yunsoho.cn/20180626135647743.jpeg?imageMogr2/thumbnail/!100p" alt=""></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/01/iOS-kits/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yun">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yun's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/01/iOS-kits/" itemprop="url">
                   我的 iOS 框架简介
                 </a>
               
@@ -323,12 +587,24 @@
                 
               
 
-              <time title="Created: 2019-01-30 10:10:00 / Modified: 10:17:13" itemprop="dateCreated datePublished" datetime="2019-01-30T10:10:00+08:00">2019-01-30</time>
+              <time title="Created: 2019-01-01 10:10:00" itemprop="dateCreated datePublished" datetime="2019-01-01T10:10:00+08:00">2019-01-01</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-04-23 08:30:44" itemprop="dateModified" datetime="2019-04-23T08:30:44+08:00">2019-04-23</time>
               
             
           </span>
@@ -2713,270 +2989,6 @@
 <p><a href="https://bitbucket.org/RehabMan/" target="_blank" rel="noopener">RehabMan bitbucket -  RehabMan的 kext下载</a></p>
 <p><a href="https://github.com/RehabMan" target="_blank" rel="noopener">RehabMan git - RehabMan的 kext下载和一些配置信息</a></p>
 <p><a href="https://github.com/acidanthera" target="_blank" rel="noopener">acidanthera git - 作者写了很多有用的 kext</a></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/11/springcloud-summary/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yun">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yun's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/11/springcloud-summary/" itemprop="url">
-                  SpringCloud 概述
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2018-08-11 20:41:32" itemprop="dateCreated datePublished" datetime="2018-08-11T20:41:32+08:00">2018-08-11</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-01-08 08:20:08" itemprop="dateModified" datetime="2019-01-08T08:20:08+08:00">2019-01-08</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/SpringCloud/" itemprop="url" rel="index"><span itemprop="name">SpringCloud</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="SpringCloud-概述"><a href="#SpringCloud-概述" class="headerlink" title="SpringCloud 概述"></a>SpringCloud 概述</h1><h2 id="微服务"><a href="#微服务" class="headerlink" title="微服务"></a>微服务</h2><p>微服务是一个小的、松耦合的分布式服务。</p>
-<h3 id="1、微服务的基础问题"><a href="#1、微服务的基础问题" class="headerlink" title="1、微服务的基础问题"></a>1、微服务的基础问题</h3><blockquote>
-<p>服务粒度</p>
-</blockquote>
-<ul>
-<li>服务职责单一</li>
-<li>服务无状态话</li>
-<li>操作表不能太多（3-5个）</li>
-<li>避免简单的 CRUD服务</li>
-</ul>
-<blockquote>
-<p>通信协议</p>
-</blockquote>
-<blockquote>
-<p>接口设计</p>
-</blockquote>
-<ul>
-<li>RESTful 风格接口</li>
-<li>内容使用 JSON</li>
-<li>HTTP 状态码表示结果</li>
-</ul>
-<blockquote>
-<p>服务的配置管理 – Config</p>
-</blockquote>
-<pre><code>统一配置服务器，避免配置与服务硬绑定。
-</code></pre><blockquote>
-<p>服务之间的事件处理 – Stream</p>
-</blockquote>
-<pre><code>使用事件解耦微服务，最小化服务之间的硬编码依赖。
-</code></pre><h3 id="2、微服务路由模式"><a href="#2、微服务路由模式" class="headerlink" title="2、微服务路由模式"></a>2、微服务路由模式</h3><p>负责处理客服端的服务请求，使其到达特定实例。</p>
-<blockquote>
-<p>服务路由（网关） – Netflix Zuul</p>
-</blockquote>
-<pre><code>为所有服务提供单个入口点，可整合安全策略、路由规则等。
-</code></pre><blockquote>
-<p>服务发现 – Netflix Eureka</p>
-</blockquote>
-<pre><code>微服务注册中心、管理服务。
-</code></pre><h3 id="3、客服端弹性模式"><a href="#3、客服端弹性模式" class="headerlink" title="3、客服端弹性模式"></a>3、客服端弹性模式</h3><p>避免单个服务影响整个系统，提高服务稳定性。</p>
-<blockquote>
-<p>客服端负载均衡 – Neflix Ribbon</p>
-</blockquote>
-<pre><code>负载均衡，避免单个服务过载
-</code></pre><blockquote>
-<p>断路器模式 – Netflix Hystrix</p>
-</blockquote>
-<pre><code>阻止客户继续调用出故障/有性能问题的服务
-</code></pre><blockquote>
-<p>后备模式 – Netflix Hystrix</p>
-</blockquote>
-<pre><code>服务调用失败后，提供后备方案
-</code></pre><blockquote>
-<p>舱壁模式 – Netflix Hystrix</p>
-</blockquote>
-<pre><code>避免个别微服务故障影响整个服务。
-</code></pre><h3 id="4、微服务安全"><a href="#4、微服务安全" class="headerlink" title="4、微服务安全"></a>4、微服务安全</h3><blockquote>
-<p>验证 – Security/OAuth2</p>
-</blockquote>
-<pre><code>身份验证
-</code></pre><blockquote>
-<p>授权 – Security/OAuth2</p>
-</blockquote>
-<pre><code>权限验证
-</code></pre><blockquote>
-<p>凭据管理和传播  – Security/OAuth2 JWT</p>
-</blockquote>
-<pre><code>验证的模式 -JWT
-</code></pre><h3 id="5、微服务日志记录与跟踪模式"><a href="#5、微服务日志记录与跟踪模式" class="headerlink" title="5、微服务日志记录与跟踪模式"></a>5、微服务日志记录与跟踪模式</h3><blockquote>
-<p>日志关联 – Sleuth</p>
-</blockquote>
-<pre><code>关联请求在所有微服务中的调用链。
-</code></pre><blockquote>
-<p>日志聚合 – Sleuth、Papertrail</p>
-</blockquote>
-<pre><code>将所有微服务的日志聚合到一起
-</code></pre><blockquote>
-<p>微服务跟踪 – Sleuth/Zipkin</p>
-</blockquote>
-<pre><code>跟踪微服务的事物流程，以及其性能。
-</code></pre><h3 id="6、微服务构建和部署"><a href="#6、微服务构建和部署" class="headerlink" title="6、微服务构建和部署"></a>6、微服务构建和部署</h3><blockquote>
-<p>构建和部署管道</p>
-</blockquote>
-<pre><code>可重复的构建和部署过程。
-</code></pre><blockquote>
-<p>基础设施即代码</p>
-</blockquote>
-<blockquote>
-<p>不可变服务器</p>
-</blockquote>
-<pre><code>部署之后永远不会改变
-</code></pre><blockquote>
-<p>凤凰服务器（Phoenix server）</p>
-</blockquote>
-<pre><code>服务长期一致性。
-</code></pre><p><img src="http://qnyunyun.yunsoho.cn/20180626135647743.jpeg?imageMogr2/thumbnail/!100p" alt=""></p>
 
           
         
